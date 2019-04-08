@@ -3,7 +3,8 @@
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
 ng g c optionalPath/newComponent # Genera un componente (opzione --spec=false per non avere il file .spec.ts)
-ng g d optionalPath/newComponent # Genera directive
+ng g d optionalPath/newDirective # Genera directive
+ng g s optionalPath/newService # Genera directive
 ```
 # PackageManager (di default npm)
 ```bash
@@ -93,7 +94,7 @@ export class MyClass implements OnInit, ...
 import { OnInit, ..., SimpleChanges } from '@angular/core';
 ```
 - **ngOnChanges(changes: SimpleChanges)**<br>
-eseguito quando il component viene creato ed ogni volta che qualche bound input property cambia (proprietà con @Input()).<br>
+eseguito quando il component viene creato ed ogni volta che qualche bound input property cambia (proprietà con **@Input**).<br>
 > NOTA: il tipo SimpleChanges fornisce anche il campo previousValue, utile per avere una memoria
 - **ngOnInit**<br>
 chiamato quando il component è inizializzato, dopo il constructor (ovvero prima che sia aggiunto al DOM).
@@ -121,7 +122,7 @@ Databinding = comunicazione tra template HTML e business logic (typescript in qu
 - [()] -> e.g. [(ngModel)]="varname" (guarda la sezione Directives per le import necessarie)
 
 > Property & Event binding sono usate anche per far comunicare tra di loro i components (tramite i decorators @Input() ed @Ouput())
-## @Input() and @Output()
+## @Input and @Output
 component.ts
 ```typescript
 import { Input, Output, EventEmitter } from '@Angular/core';
@@ -243,7 +244,7 @@ export class BasicHighlightDirective implements OnInit {
   }
 }
 ```
-> NOTA: non è una good practice accedere così agli elementi del DOM, meglio usare il **renderer** o la property **@HostBinding()** per evitare problemi. (es. l'app gira su un service che non ha accesso al DOM)
+> NOTA: non è una good practice accedere così agli elementi del DOM, meglio usare il **renderer** o la property **@HostBinding** per evitare problemi. (es. l'app gira su un service che non ha accesso al DOM)
 
 basic-highlight.directive.ts
 ```typescript
@@ -257,6 +258,8 @@ export class BasicHighlightDirective implements OnInit {
   @Input() highlightColor: string = 'blue';
   // @HostBinding è un modo più veloce e semplice di usare Renderer2
   @HostBinding('style.backgroundColor') backgroundColor: string;
+  // Eesempio di HostBinding su una classe:
+  // @HostBinding('class.myClass') bool: boolean;
   constructor(private elRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
@@ -282,7 +285,7 @@ export class BasicHighlightDirective implements OnInit {
   [highlightColor]="'red'"
   [defaultColor]="'yellow'">red bg when mouse over, yellow bg when mouse leave</p>
 ```
-> Angular prima controlla se la direttiva ha degli @Input() e dopo controlla il component, quindi le custom properties delle direttive hanno la precedenza.
+> Angular prima controlla se la direttiva ha degli **@Input** e dopo controlla il component, quindi le custom properties delle direttive hanno la precedenza.
 ### Custom structural directive example
 .module.ts
 ```typescript
@@ -361,8 +364,8 @@ Augury è un estensione chrome che permette di analizzare app angular.
 # General
 ## Local References (label)
 Tramite queste label posso riferirmi ad un elemento html e passarlo come argomento<br>
-> SOLO nel html le posso usare, non nel typescript a meno che non si usi @ViewChild() o @ContentChild()<br>
-> ViewChild se è nella vista, ContentChild se è nel content (ng-content)
+> SOLO nel html le posso usare, non nel typescript a meno che non si usi **@ViewChild** o **@ContentChild**<br>
+> @ViewChild se è nella vista, @ContentChild se è nel content (ng-content)
 ```html
 <div #LocalReference>Hello World</div>
 <button (click)="myFunc(LocalReference)">Click me!</button>
@@ -380,7 +383,59 @@ export class ExampleClass {
 }
 ```
 > NOTA<br>
-> un buon modo per capire di che tipo è la reference (di solito ElementRef con la proprietà nativeElement) ed analizzarne la struttura, è usare un console.log() per stampare l'elemento.
+> un buon modo per capire di che tipo è la reference (di solito ElementRef con la proprietà nativeElement) ed analizzarne la struttura, è usare un **console.log()** per stampare l'elemento.
 
 > NOTA<br>
-> Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile non farlo essendoci modi migliori forniti da Angular.
+> Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile NON FARLO essendoci modi migliori forniti da Angular.
+# Services and Dependency Injection
+I servizi aiutano a centralizzare la business logic, rendendola più facile da mantenere.<br>
+Angular fornisce **@Injectable** per poter injectare i servizi nei componenti tramite il **dependency Hierarchical Injector**.<br>
+## Hierarchical Injector
+Se metto il servizio nell'array dei providers del:
+- **AppModule** -> La stessa instanza del servizio è disponibile **Application-wide** (ovunque)
+- **AppComponent** -> La stessa istanza è disponibile in **tutti i components** (ma non negli altri servizi)
+- **Any other component** -> La stessa istanza è disponibile per il component ed i suoi child.
+
+Come injectare un service in un component:
+```typescript
+import { ExampleService } from 'path';
+// ...
+@Component({
+  // ...
+  providers: [ExampleService] // Se voglio che l'istanza del servizio sia disponibile SOLO per il component ed i suoi child.
+})
+// ...
+  constructor(private/public exService: ExampleService) {}
+```
+> NOTA: se il servizio avrà ad esempio un altro servizio injectato al suo interno, servirà usare il decorator **@Injectable**. E servirà rendere il servizio disponibile a livello di modulo
+```typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root' // Opzione che rende disponibile a livello di root il servizio
+})
+```
+> NOTA: di default i servizi creati tramite CLI sono creati con **@Injectable** e providedIn: 'root'
+# Routing
+Angular fornisce un routing client-side: l'utente ha la sensazione che il routing stia funzionando normalmente, in realtà anche cambiando pagina si è nella stessa pagina, che carica differenti components (SPA)<br>
+> Da Angular 7 l'ng new chiede già se si vuole il routing, evito di descrivere la struttura della classe necessaria e le varie import
+## router-outlet
+app.component
+```html
+<header></header>
+<router-outlet></router-outlet> <!--Qui ci va il component corrispondente al path attuale-->
+<footer></footer>
+```
+## Router links
+I link "normali" sembrano funzionare allo stesso modo, anche provando, il loro problema è che REFRESHANO LA PAGINA. Angular fornisce quindi una speciale directive: routerLink
+```html
+<a routerLink="/"></a>
+<!--Grazie al DataBinding ed alla struttura ad array si possono creare path complessi più facilmente-->
+<a [routerLink]="['/users', id]"></a>
+```
+Per definire i vari path vanno aggiunti gli oggetti all'array di tipo Routes del modulo
+```typescript
+const routes: Routes = [
+  { path: '', component: LoginComponent },
+  { path: '/users/:id', component: UsersComponent }, // path con parametro variabile (/users/67, /users/78, ecc.)
+```

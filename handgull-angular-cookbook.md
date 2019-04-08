@@ -429,13 +429,55 @@ app.component
 ## Router links
 I link "normali" sembrano funzionare allo stesso modo, anche provando, il loro problema è che REFRESHANO LA PAGINA. Angular fornisce quindi una speciale directive: routerLink
 ```html
-<a routerLink="/"></a>
+<!--se il link è quello aggiungo la classe-->
+<!--routerLinkActiveOptions option fornita per richiedere che l'active path sia esattamente uguale-->
+<div
+  routerLinkActive="myClass"
+  [routerLinkActiveOptions]="{exact: true}">
+  <a routerLink="/"></a>
+</div>
 <!--Grazie al DataBinding ed alla struttura ad array si possono creare path complessi più facilmente-->
-<a [routerLink]="['/users', id]"></a>
+<a [routerLink]="['/users', id, name]"></a> <!--path con parametro id e name-->
 ```
 Per definire i vari path vanno aggiunti gli oggetti all'array di tipo Routes del modulo
 ```typescript
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: '/users/:id', component: UsersComponent }, // path con parametro variabile (/users/67, /users/78, ecc.)
+  { path: '/users/:id/:name', component: UsersComponent }, // path con parametro (/users/67/marco, /users/78/giovanni, ecc.)
+```
+## Navigating Programmatically
+Per spostarsi tra le pagine a seguito di alcune logiche typescript si può usare un **oggetto di tipo Router**.
+```typescript
+import { Router, ActivatedRoute } from '@angular/core';
+// ...
+  construcor(private router: Router, private route: ActivatedRoute) {}
+// ...
+  myFunc() {
+    // complex calculations
+    this.router.navigate(['/']);
+    // relative routing
+    this.router.navigate(['path'], {relativeTo: this.route});
+  }
+// ...
+```
+## Fetching route parameters
+Si è visto come creare path con parametri, da typescript si può accedere a questi parametri nel seguente modo:
+```typescript
+import { ActivatedRoute, Params } from '@angular/core';
+// ...
+  construcor(private route: ActivatedRoute) {}
+  // ...
+  myFunc() {
+    // snapshot eseguito solo una volta
+    this.user = {
+      id: this.route.snapshot.params['id'],
+      name: this.route.snapshot.params['name']
+    }
+    // observable che si accorge dei cambiamenti
+    this.route.params.subscribe((params: Params) => {
+      this.user.id = params['id'];
+      this.user.name = params['name'];
+    });
+  }
+// ...
 ```

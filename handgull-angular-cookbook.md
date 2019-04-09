@@ -38,12 +38,19 @@
   - [Router links](#router-links)
   - [Navigating Programmatically](#navigating-programmatically)
   - [Fetching route parameters](#fetching-route-parameters)
+  - [Query Parameters and Fragments](#query-parameters-and-fragments)
+  - [Nested Routes](#nested-routes)
+  - [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
+  - [Guards](#guards)
+    - [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
+    - [canDeactivate](#candeactivate)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
 ng g c optionalPath/newComponent # Genera un componente (opzione --spec=false per non avere il file .spec.ts)
 ng g d optionalPath/newDirective # Genera directive
 ng g s optionalPath/newService # Genera directive
+ng g g optionalPath/newService # Genera guard
 ```
 # PackageManager (di default npm)
 ```bash
@@ -460,7 +467,7 @@ import { Injectable } from '@angular/core';
 Angular fornisce un routing client-side: l'utente ha la sensazione che il routing stia funzionando normalmente, in realtà anche cambiando pagina si è nella stessa pagina, che carica differenti components (SPA)<br>
 > Da Angular 7 l'ng new chiede già se si vuole il routing, evito di descrivere la struttura della classe necessaria e le varie import
 ## router-outlet
-app.component
+app.component.html
 ```html
 <header></header>
 <router-outlet></router-outlet> <!--Qui ci va il component corrispondente al path attuale-->
@@ -483,7 +490,8 @@ Per definire i vari path vanno aggiunti gli oggetti all'array di tipo Routes del
 ```typescript
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: '/users/:id/:name', component: UsersComponent }, // path con parametro (/users/67/marco, /users/78/giovanni, ecc.)
+  { path: '/users/:id/:name', component: UsersComponent } // path con parametro (/users/67/marco, /users/78/giovanni, ecc.)
+];
 ```
 ## Navigating Programmatically
 Per spostarsi tra le pagine a seguito di alcune logiche typescript si può usare un **oggetto di tipo Router**.
@@ -508,7 +516,7 @@ import { Subscription } from 'rxjs/Subscription';
 // ...
   paramsSubscription: Subscription; // Credo la variabile a cui assegno la subscription
 
-  construcor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute) {}
   // ...
   myFunc() {
     // snapshot eseguito solo una volta
@@ -529,4 +537,223 @@ import { Subscription } from 'rxjs/Subscription';
     this.paramsSubscription.unsubscribe();
   }
 // ...
+```
+## Query Parameters and Fragments
+i parametri http vengono aggiunti tramite la proprietà **queryParams** della direttiva **routerLink**, mentre l'hash fragment viene aggiunto tramite **fragment**.<br>
+Da html:
+```html
+<a
+  [routerLink]="['path', subPath, 'othersubpath']"
+  [queryParams]="{qp1: '1', qp2: '2'}"
+  fragment="section2"></a>
+<!-- path/value/othersubpath?qp1=1?qp2=2#section2 -->
+```
+Da typescript:
+```typescript
+this.router.navigate(
+  ['/path'],
+  {
+    queryParams: {
+      {qp1: '1', qp2: '2'}
+    },
+    queryParamsHandling: 'preserve' // esistono anche altre opzioni, con preserve ho una memoria dei valori
+  },
+  fragment: 'section2'
+);
+```
+Leggere Query Parameters and Fragments dall'URL:
+```typescript
+// ...
+  constructor(private route: ActivatedRoute) {}
+  // ...
+  myFunc() {
+    // snapshot eseguito solo una volta
+    console.log(this.route.snapshot.queryParams);
+    console.log(this.route.snapshot.fragment);
+    // observable che si accorge dei cambiamenti
+    this.route.queryParams.subscribe();
+    this.route.fragment.subscribe();
+  }
+```
+## Nested Routes
+Grazie al **child routing** è possibile avere la possibilità di mettere la direttiva \<router-outlet> anche dentro a dei component chiamati dal \<router-outlet>.<br><br>
+File contenente l'array di tipo Routes del modulo:
+```typescript
+const routes: Routes = [
+  { path: '', component: LoginComponent },
+  { path: '/users', component: UsersComponent, children: [
+    { path: ':id', component: UserComponent },
+    { path: ':id/edit', component: EditComponent }
+  }
+];
+```
+app.component.html
+```html
+<router-outlet></router-outlet> <!--Qui ci va il component corrispondente al path attuale-->
+```
+users.component.html
+```html
+<router-outlet></router-outlet> <!--Qui verranno messi i children (UserComponent o EditComponent)-->
+```
+## Redirecting and Wildcard Routes
+> NOTA: ** identifica ogni path non trovato sopra, è importante metterlo per ultimo.
+
+File contenente l'array di tipo Routes del modulo:
+```typescript
+const routes: Routes = [
+  // other routes
+  { path: '', redirectTo: '/somewhere' }, // ALWAYS redirect
+  { path: '', redirectTo: '/somewhere', pathMatch: 'full' }, // redirect solo se sono in ''
+  { path: '**', redirectTo: '/not-found' }
+];
+```
+## Route Guards
+Essenzialmente sono codice che può essere eseguito prima di caricare una route oppure appena prima di lasciarla.<br>
+> SIMPLE USE CASE: dare il permesso di accedere ad una pagina solo se si è loggati. (canActivate guard).
+
+Fake service che notifica tramite promise un login:
+```typescript
+// ...
+  isAuthenticated() {
+    const promise = new Promise(
+      (resolve, reject) => {
+        setTimeout(() => {
+          resolve(this.loggedIn);
+        }, 800);
+      }
+    );
+    return promise;
+  }
+// ...
+```
+auth-guard.service.ts:
+```typescript
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router
+} from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { FakeService } from 'path';
+
+@Injectable() // perchè injecto un service dentro la guard
+export class AuthGuard implements CanActivate {
+  constructor(private authService: FakeService, private router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot,
+              state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    return this.authService.isAuthenticated().then(
+      (authenticated: boolean) => {
+        if (authenticated) {
+          return true;
+        } else {
+          this.router.navigate(['/']);
+        }
+      }
+    );
+  }
+}
+```
+La guardia va aggiunta ai providers del .module.ts:
+```typescript
+import { AuthGuard } from 'path';
+import { FakeService } from 'path';
+// ...
+@NgModule({
+  // ...
+  providers: [FakeService, AuthGuard]
+})
+```
+La guardia va assegnata alla route:
+```typescript
+import { AuthGuard } from 'path';
+// ...
+const routes: Routes = [
+  { path: '/users', canActivate: [AuthGuard], component: UsersComponent }
+];
+```
+### Protecting Child (nested) Routes with canActivateChild
+Per evitare di dover mettere un canActivate su ogni child
+auth-guard.service.ts:
+```typescript
+import {
+  CanActivateChild
+} from '@angular/router';
+// ...
+export class AuthGuard implements CanActivate, CanActivateChild {
+  // ...
+  canActivateChild(route: ActivatedRouteSnapshot,
+                   state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    return this.canActivate(route, state);
+  }
+```
+File contenente l'array di tipo Routes del modulo:
+```typescript
+const routes: Routes = [
+  { path: '', component: LoginComponent },
+  { path: '/users', canActivateChild: [AuthGuard], component: UsersComponent, children: [
+    { path: ':id', component: UserComponent },
+    { path: ':id/edit', component: EditComponent }
+  }
+];
+```
+### canDeactivate
+Guard attivata appena prima di lasciare la route
+> USE CASE: per notificare l'utente che non ha salvato dei cambiamenti
+can-deactivate-guard.service.ts:
+```typescript
+import {
+  CanDeactivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot
+} from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+
+export interface CanComponentDeactivate {
+  canDeactivate: () => Observable<boolean> | Promise<boolean> | boolean;
+}
+
+export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate> {
+
+  CanDeactivate(component: CanComponentDeactivate,
+                currentRoute: ActivatedRouteSnapshot,
+                currentState: RouterStateSnapshot,
+                nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    return component.canDeactivate();
+  }
+}
+```
+La guardia va assegnata alla route:
+```typescript
+import { CanDeactivateGuard } from 'path';
+// ...
+const routes: Routes = [
+  { path: '/edit', canDeactivate: [CanDeactivateGuard], component: EditComponent }
+];
+```
+La guardia va aggiunta ai providers del .module.ts:
+```typescript
+import { CanDeactivateGuard } from 'path';
+// ...
+@NgModule({
+  // ...
+  providers: [CanDeactivateGuard]
+})
+```
+Va modificato anche il component la cui rout chiama canDeactivate (in questo caso EditComponent):
+```typescript
+import { CanComponentDeactivate } from 'path/can-deactivate-guard.service';
+// ...
+export class EditComponent implements CanComponentDeactivate, ... {
+  // ...
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    if (somethingChanged) {
+      return confirm('Vuoi uscire?');
+    } else {
+      return true;
+    }
+  }
+}
 ```

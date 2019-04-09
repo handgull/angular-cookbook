@@ -693,7 +693,7 @@ File contenente l'array di tipo Routes del modulo:
 ```typescript
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: '/users', canActivateChild: [AuthGuard], component: UsersComponent, children: [
+  { path: 'users', canActivateChild: [AuthGuard], component: UsersComponent, children: [
     { path: ':id', component: UserComponent },
     { path: ':id/edit', component: EditComponent }
   }
@@ -730,7 +730,7 @@ La guardia va assegnata alla route:
 import { CanDeactivateGuard } from 'path';
 // ...
 const routes: Routes = [
-  { path: '/edit', canDeactivate: [CanDeactivateGuard], component: EditComponent }
+  { path: 'edit', canDeactivate: [CanDeactivateGuard], component: EditComponent }
 ];
 ```
 La guardia va aggiunta ai providers del .module.ts:
@@ -756,4 +756,27 @@ export class EditComponent implements CanComponentDeactivate, ... {
     }
   }
 }
+```
+## Passing Data to a Route
+```typescript
+const routes: Routes = [
+  { path: 'not-found', ..., data: object }
+];
+```
+Il component riceve i dati:
+```typescript
+import { ActivatedRoute, Data } from '@angular/router';
+
+  constructor(private route: ActivatedRoute) {}
+
+  someFunc() {
+    // shortcut eseguita una volta sola
+    console.log(this.route.snapshot.data);
+    // observable che si aggiorna
+    this.route.data.subscribe(
+      (data: Data) => {
+        console.log(data);
+      }
+    )
+  }
 ```

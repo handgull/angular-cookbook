@@ -1,5 +1,44 @@
 ## Angular cookbook by hangull
-# CLI Commands
+# Summary
+- [Angular CLI](#angular-cli)
+- [PackageManager](#packagemanager-di-default-npm)
+- General
+  - [Local References (label)](#local-references-label)
+- [Components](#angular-components)
+  - [Component templates](#component-templates)
+  - [Selector](#selector-valido-anche-per-directive)
+  - [View Encapsulation](#view-encapsulation)
+  - [Projecting content with ng-content](#projecting-content-with-ng-content)
+  - [Component Lifecycle (hooks)](#component-lifecycle-hooks)
+- [Databinding](#databinding-comunicazione)
+  - [Output Data](#ouput-data)
+  - [React to Events](#react-to-events)
+  - [Two-Way-Binding](#two-way-binding-ouput--react-to-events)
+  - [@Input and @Output](#input-and-output)
+- [Directives](#angular-directives)
+  - [ngModel (FormsModule)](#ngmodel-directive)
+  - [Built-in Structural directives](#built-in-structural-directives)
+    - [ngIf](#ngif)
+    - [ngFor](#ngfor)
+    - [ngSwitch](#ngswitch)
+  - [Built-in Attribute directives](#built-in-attribute-directives)
+    - [ngStyle](#ngstyle)
+    - [ngClass](#ngclass)
+  - [Custom directives](#custom-directives)
+    - [Custom attribute directive example](#custom-attribute-directive-example)
+    - [Custom structural directive example](#custom-structural-directive-example)
+- [Models](#models-interfacce)
+- [Debug](#debug-tools)
+  - [Sourcemaps](#sourcemaps)
+  - [Augury](#augury)
+- [Services and Dependency Injection](#angular-services-and-dependency-injection)
+  - [Hierarchical Injector](#hierarchical-injector)
+- [Routing](#client-side-routing)
+  - [router-outlet](#router-outlet)
+  - [Router links](#router-links)
+  - [Navigating Programmatically](#navigating-programmatically)
+  - [Fetching route parameters](#fetching-route-parameters)
+# Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
 ng g c optionalPath/newComponent # Genera un componente (opzione --spec=false per non avere il file .spec.ts)
@@ -12,7 +51,33 @@ ng g s optionalPath/newService # Genera directive
 npm install --save package # Installa il package E LO SALVA in package.json (i file dei package vanno in node_modules)
 npm install # Installa tutti i package elencati in package.json
 ```
-# Components
+# General
+## Local References (label)
+Tramite queste label posso riferirmi ad un elemento html e passarlo come argomento<br>
+> SOLO nel html le posso usare, non nel typescript a meno che non si usi **@ViewChild** o **@ContentChild**<br>
+> @ViewChild se è nella vista, @ContentChild se è nel content (ng-content)
+```html
+<div #LocalReference>Hello World</div>
+<button (click)="myFunc(LocalReference)">Click me!</button>
+<ng-content>
+  <div #LocalContentReference>Hello World</div>
+</ng-content>
+```
+.ts corrispondente all'html
+```typescript
+import { ViewChild, ContentChild, ElementRef } from '@angular/core';
+// ...
+export class ExampleClass {
+  @ViewChild('LocalReference') LocalReference: ElementRef;
+  @ContentChild('LocalContentReference') LocalContentReference: ElementRef;
+}
+```
+> NOTA<br>
+> un buon modo per capire di che tipo è la reference (di solito ElementRef con la proprietà nativeElement) ed analizzarne la struttura, è usare un **console.log()** per stampare l'elemento.
+
+> NOTA<br>
+> Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile NON FARLO essendoci modi migliori forniti da Angular.
+# Angular Components
 ## Component templates
 Usare un inline-template al posto di usare templateUrl/styleUrls
 ```typescript
@@ -110,7 +175,7 @@ chiamato dopo che la view del componente (e dei suoi child) è inizializzata.
 chiamato ogni volta che la view del componente (e dei suoi child) è controllata.
 - **ngOnDestroy**<br>
 chiamato quando il component sta per essere distrutto (quando sta per essere rimosso dal DOM)
-# Databinding
+# Databinding (comunicazione)
 Databinding = comunicazione tra template HTML e business logic (typescript in questo caso)
 ## Ouput Data
 - **String Interpolation** {{ expression }}
@@ -146,10 +211,11 @@ component.html
   (customEvent1)="myFancyFunc($event)"
   (optionalAlias2)="myFancyFunc($event)"></component>
 ```
-# Directives
+# Angular Directives
 Le Directives sono istruzioni nel DOM, il selector consigliato è by attribute<br>
 **I Components sono Directives**
-## [(ngModel)]="varname"
+## ngModel Directive
+### [(ngModel)]="varname"<br>
 Permette di utilizzare in modo rapido e facile il Two-Way-Binding
 ```typescript
 // imports da includere nel .module.ts corrente
@@ -322,7 +388,7 @@ export class UnlessDirective {
 ```html
 <div *appUnless="expression">if not expression</div>
 ```
-# Models
+# Models (interfacce)
 I modelli definiscono la struttura degli oggetti, averli generali in un file permette di accorgersi rapidamente delle modifiche da apportare in tutto il progetto al variare della struttura della classe esportata dal modello.
 > Esempio di modello:
 ```typescript
@@ -347,7 +413,7 @@ export class ExampleClass { // Il nome della classe è in PascalCase per convenz
 // Esempio di utilizzo del costruttore
 example: ExampleClass = new ExampleClass('example', true); // Ridondanza evitabile
 ```
-# Debug
+# Debug tools
 ## Sourcemaps
 Grazie alla compatibilità con sourcemaps, usando la console: **F12 > source** potremo vedere il codice, che verrà ritradotto in typescript e da lì sarà possibile aggiungere dei breakpoint **DIRETTAMENTE** da browser.
 > HARD WAY<br>
@@ -361,33 +427,7 @@ Augury è un estensione chrome che permette di analizzare app angular.
 - Injector Graph (mostra le dipendenze tra i componenti ed i servizi)
 - Aiuta a controllare il routing client side
 - Mostra i moduli e le relative import
-# General
-## Local References (label)
-Tramite queste label posso riferirmi ad un elemento html e passarlo come argomento<br>
-> SOLO nel html le posso usare, non nel typescript a meno che non si usi **@ViewChild** o **@ContentChild**<br>
-> @ViewChild se è nella vista, @ContentChild se è nel content (ng-content)
-```html
-<div #LocalReference>Hello World</div>
-<button (click)="myFunc(LocalReference)">Click me!</button>
-<ng-content>
-  <div #LocalContentReference>Hello World</div>
-</ng-content>
-```
-.ts corrispondente all'html
-```typescript
-import { ViewChild, ContentChild, ElementRef } from '@angular/core';
-// ...
-export class ExampleClass {
-  @ViewChild('LocalReference') LocalReference: ElementRef;
-  @ContentChild('LocalContentReference') LocalContentReference: ElementRef;
-}
-```
-> NOTA<br>
-> un buon modo per capire di che tipo è la reference (di solito ElementRef con la proprietà nativeElement) ed analizzarne la struttura, è usare un **console.log()** per stampare l'elemento.
-
-> NOTA<br>
-> Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile NON FARLO essendoci modi migliori forniti da Angular.
-# Services and Dependency Injection
+# Angular Services and Dependency Injection
 I servizi aiutano a centralizzare la business logic, rendendola più facile da mantenere.<br>
 Angular fornisce **@Injectable** per poter injectare i servizi nei componenti tramite il **dependency Hierarchical Injector**.<br>
 ## Hierarchical Injector
@@ -416,7 +456,7 @@ import { Injectable } from '@angular/core';
 })
 ```
 > NOTA: di default i servizi creati tramite CLI sono creati con **@Injectable** e providedIn: 'root'
-# Routing
+# Client-side Routing
 Angular fornisce un routing client-side: l'utente ha la sensazione che il routing stia funzionando normalmente, in realtà anche cambiando pagina si è nella stessa pagina, che carica differenti components (SPA)<br>
 > Da Angular 7 l'ng new chiede già se si vuole il routing, evito di descrivere la struttura della classe necessaria e le varie import
 ## router-outlet
@@ -464,7 +504,10 @@ import { Router, ActivatedRoute } from '@angular/core';
 Si è visto come creare path con parametri, da typescript si può accedere a questi parametri nel seguente modo:
 ```typescript
 import { ActivatedRoute, Params } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 // ...
+  paramsSubscription: Subscription; // Credo la variabile a cui assegno la subscription
+
   construcor(private route: ActivatedRoute) {}
   // ...
   myFunc() {
@@ -474,10 +517,16 @@ import { ActivatedRoute, Params } from '@angular/core';
       name: this.route.snapshot.params['name']
     }
     // observable che si accorge dei cambiamenti
-    this.route.params.subscribe((params: Params) => {
+    // non ho bisogno di ditruggerlo in realtà, lo distrugge già angular
+    this.paramsSubscription = this.route.params.subscribe((params: Params) => {
       this.user.id = params['id'];
       this.user.name = params['name'];
     });
+  }
+
+  ngOnDestroy() {
+    // questa unsubscribe quindi è necessaria solo con observable fatti dal programmatore
+    this.paramsSubscription.unsubscribe();
   }
 // ...
 ```

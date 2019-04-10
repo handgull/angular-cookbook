@@ -1,49 +1,54 @@
 ## Angular cookbook by hangull
-# Summary
-- [Angular CLI](#angular-cli)
-- [PackageManager](#packagemanager-di-default-npm)
-- General
-  - [Local References (label)](#local-references-label)
-- [Components](#angular-components)
-  - [Component templates](#component-templates)
-  - [Selector](#selector-valido-anche-per-directive)
-  - [View Encapsulation](#view-encapsulation)
-  - [Projecting content with ng-content](#projecting-content-with-ng-content)
-  - [Component Lifecycle (hooks)](#component-lifecycle-hooks)
-- [Databinding](#databinding-comunicazione)
-  - [Output Data](#ouput-data)
-  - [React to Events](#react-to-events)
-  - [Two-Way-Binding](#two-way-binding-ouput--react-to-events)
-  - [@Input and @Output](#input-and-output)
-- [Directives](#angular-directives)
-  - [ngModel (FormsModule)](#ngmodel-directive)
-  - [Built-in Structural directives](#built-in-structural-directives)
-    - [ngIf](#ngif)
-    - [ngFor](#ngfor)
-    - [ngSwitch](#ngswitch)
-  - [Built-in Attribute directives](#built-in-attribute-directives)
-    - [ngStyle](#ngstyle)
-    - [ngClass](#ngclass)
-  - [Custom directives](#custom-directives)
-    - [Custom attribute directive example](#custom-attribute-directive-example)
-    - [Custom structural directive example](#custom-structural-directive-example)
-- [Models](#models-interfacce)
-- [Debug](#debug-tools)
-  - [Sourcemaps](#sourcemaps)
-  - [Augury](#augury)
-- [Services and Dependency Injection](#angular-services-and-dependency-injection)
-  - [Hierarchical Injector](#hierarchical-injector)
-- [Routing](#client-side-routing)
-  - [router-outlet](#router-outlet)
-  - [Router links](#router-links)
-  - [Navigating Programmatically](#navigating-programmatically)
-  - [Fetching route parameters](#fetching-route-parameters)
-  - [Query Parameters and Fragments](#query-parameters-and-fragments)
-  - [Nested Routes](#nested-routes)
-  - [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
-  - [Guards](#guards)
-    - [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
-    - [canDeactivate](#candeactivate)
+1. [Angular CLI](#angular-cli)
+2. [PackageManager (di default npm)](#packagemanager-di-default-npm)
+3. [General](#general)
+   1. [Debug tools](#debug-tools)
+      1. [Sourcemaps](#sourcemaps)
+      2. [Augury](#augury)
+   2. [Local References (label)](#local-references-label)
+4. [Angular Components](#angular-components)
+   1. [Component templates](#component-templates)
+   2. [Selector (valido anche per @Directive)](#selector-valido-anche-per-directive)
+   3. [View Encapsulation](#view-encapsulation)
+   4. [Projecting content with ng-content](#projecting-content-with-ng-content)
+   5. [Component Lifecycle (hooks)](#component-lifecycle-hooks)
+5. [Databinding (comunicazione)](#databinding-comunicazione)
+   1. [Ouput Data](#ouput-data)
+   2. [React to Events](#react-to-events)
+   3. [Two-Way-Binding (Ouput + React to Events)](#two-way-binding-ouput--react-to-events)
+   4. [@Input and @Output](#input-and-output)
+6. [Angular Directives](#angular-directives)
+   1. [[(ngModel)] Directive](#ngmodel-directive)
+   2. [Built-in Structural directives:](#built-in-structural-directives)
+      1. [*ngIf](#ngif)
+      2. [*ngFor](#ngfor)
+      3. [*ngSwitch](#ngswitch)
+   3. [Built-in Attribute directives](#built-in-attribute-directives)
+      1. [ngStyle](#ngstyle)
+      2. [ngClass](#ngclass)
+   4. [Custom directives](#custom-directives)
+      1. [Custom attribute directive example](#custom-attribute-directive-example)
+      2. [Custom structural directive example](#custom-structural-directive-example)
+7. [Models (interfacce)](#models-interfacce)
+8. [Angular Services and Dependency Injection](#angular-services-and-dependency-injection)
+   1. [Hierarchical Injector](#hierarchical-injector)
+9. [Routing](#routing)
+   1. [router-outlet](#router-outlet)
+   2. [Router links](#router-links)
+   3. [Navigating Programmatically](#navigating-programmatically)
+   4. [Fetching route parameters](#fetching-route-parameters)
+   5. [Query Parameters and Fragments](#query-parameters-and-fragments)
+   6. [Nested Routes](#nested-routes)
+   7. [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
+   8. [Route Guards](#route-guards)
+      1. [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
+      2. [canDeactivate](#candeactivate)
+   9. [Passing Data to a Route](#passing-data-to-a-route)
+      1. [Static way](#static-way)
+      2. [Dynamic way with a Resolver Guard](#dynamic-way-with-a-resolver-guard)
+10. [Observables](#observables)
+   1. [Unsubscribe](#unsubscribe)
+   2. [Subject](#subject)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -59,6 +64,20 @@ npm install --save package # Installa il package E LO SALVA in package.json (i f
 npm install # Installa tutti i package elencati in package.json
 ```
 # General
+## Debug tools
+### Sourcemaps
+Grazie alla compatibilità con sourcemaps, usando la console: **F12 > source** potremo vedere il codice, che verrà ritradotto in typescript e da lì sarà possibile aggiungere dei breakpoint **DIRETTAMENTE** da browser.
+> HARD WAY<br>
+> trovare lo spezzone di codice dal main<br>
+> EASY WAY<br>
+> aprire la cartella **webpack > src** e navigare tra i file .ts del progetto
+### Augury
+Augury è un estensione chrome che permette di analizzare app angular.<br>
+**Funzionalità:**<br>
+- Lista dei components
+- Injector Graph (mostra le dipendenze tra i componenti ed i servizi)
+- Aiuta a controllare il routing client side
+- Mostra i moduli e le relative import<br>
 ## Local References (label)
 Tramite queste label posso riferirmi ad un elemento html e passarlo come argomento<br>
 > SOLO nel html le posso usare, non nel typescript a meno che non si usi **@ViewChild** o **@ContentChild**<br>
@@ -221,8 +240,8 @@ component.html
 # Angular Directives
 Le Directives sono istruzioni nel DOM, il selector consigliato è by attribute<br>
 **I Components sono Directives**
-## ngModel Directive
-### [(ngModel)]="varname"<br>
+## [(ngModel)] Directive
+**[(ngModel)]="varname"**<br>
 Permette di utilizzare in modo rapido e facile il Two-Way-Binding
 ```typescript
 // imports da includere nel .module.ts corrente
@@ -237,7 +256,6 @@ import { FormsModule } from '@angular/forms';
 // ...
 ```
 ## Built-in Structural directives:
----
 Cambiano il DOM, le structural directives hanno un * all'inizio che behind the scenes Angular trasforma in un property binding
 ```html
 <div *ngIf="expression">text</div>
@@ -247,19 +265,19 @@ Cambiano il DOM, le structural directives hanno un * all'inizio che behind the s
 </ng-template>
 ```
 > NOTA: non si può avere più di una structural directive sullo stesso elemento HTML
-## *ngIf
+### *ngIf
 Aggiunge o rimuove un elemento dal DOM in base alla condizione. Non è come un display: none da CSS
 ```html
 <div *ngIf="expression; else elseTemplate">expression was true</div>
 <ng-template #elseTemplate></ng-template>
 ```
-## *ngFor
+### *ngFor
 Ripete l'elemento ciclando su un array dato (purtroppo non si può ciclare su un numero)
 ```html
 <div *ngFor="let e of array; let i=index">InnerText</div>
 <!--La seconda parte è opzionale, e serve a sapere l'index attuale dell'array (tramite la variabile i)-->
 ```
-## *ngSwitch
+### *ngSwitch
 Visualizza il case corrispondente al value immesso
 ```html
 <div [ngSwitch]="value">
@@ -269,24 +287,21 @@ Visualizza il case corrispondente al value immesso
   <div *ngSwitchDefault>Value is Default</div>
 </div>
 ```
----
 ## Built-in Attribute directives
----
 Cambiano solo l'elemento su cui sono piazzate
-## ngStyle
+### ngStyle
 > Nel seguente esempio uso il Property Binding per configurare la direttiva ngStyle
 ```html
 <div [ngStyle]="{cssProperty: expression}">InnerText</div>
 <div [style.cssProperty]="expression">InnerText</div><!--Alternativa elegante ad ngStyle-->
 <!--expression deve ritornare una stringa valida per la proprietà CSS-->
 ```
-## ngClass
+### ngClass
 ```html
 <div [ngClass]="{className: expression}">InnerText</div>
 <div [class.className]="expression">InnerText</div><!--Alternativa elegante ad ngClass-->
 <!--expression deve ritornare un boolean (true = l'elemento avrà la classe)-->
 ```
----
 ## Custom directives
 ### Custom attribute directive example
 .module.ts
@@ -420,29 +435,14 @@ export class ExampleClass { // Il nome della classe è in PascalCase per convenz
 // Esempio di utilizzo del costruttore
 example: ExampleClass = new ExampleClass('example', true); // Ridondanza evitabile
 ```
-# Debug tools
-## Sourcemaps
-Grazie alla compatibilità con sourcemaps, usando la console: **F12 > source** potremo vedere il codice, che verrà ritradotto in typescript e da lì sarà possibile aggiungere dei breakpoint **DIRETTAMENTE** da browser.
-> HARD WAY<br>
-> trovare lo spezzone di codice dal main<br>
-> EASY WAY<br>
-> aprire la cartella **webpack > src** e navigare tra i file .ts del progetto
-## Augury
-Augury è un estensione chrome che permette di analizzare app angular.
-### Funzionalità
-- Lista dei components
-- Injector Graph (mostra le dipendenze tra i componenti ed i servizi)
-- Aiuta a controllare il routing client side
-- Mostra i moduli e le relative import
 # Angular Services and Dependency Injection
 I servizi aiutano a centralizzare la business logic, rendendola più facile da mantenere.<br>
-Angular fornisce **@Injectable** per poter injectare i servizi nei componenti tramite il **dependency Hierarchical Injector**.<br>
+Angular fornisce **@Injectable** per poter injectare i servizi nei componenti tramite il **dependency Hierarchical Injector**.
 ## Hierarchical Injector
 Se metto il servizio nell'array dei providers del:
 - **AppModule** -> La stessa instanza del servizio è disponibile **Application-wide** (ovunque)
 - **AppComponent** -> La stessa istanza è disponibile in **tutti i components** (ma non negli altri servizi)
-- **Any other component** -> La stessa istanza è disponibile per il component ed i suoi child.
-
+- **Any other component** -> La stessa istanza è disponibile per il component ed i suoi child.<br>
 Come injectare un service in un component:
 ```typescript
 import { ExampleService } from 'path';
@@ -463,9 +463,16 @@ import { Injectable } from '@angular/core';
 })
 ```
 > NOTA: di default i servizi creati tramite CLI sono creati con **@Injectable** e providedIn: 'root'
-# Client-side Routing
+# Routing
 Angular fornisce un routing client-side: l'utente ha la sensazione che il routing stia funzionando normalmente, in realtà anche cambiando pagina si è nella stessa pagina, che carica differenti components (SPA)<br>
 > Da Angular 7 l'ng new chiede già se si vuole il routing, evito di descrivere la struttura della classe necessaria e le varie import
+
+Il server deve gestire il redirect costante alla pagina index.html generata da Angular, se questo non avviene si può utilizzare un # che dice di ignorare il resto del path, in questo modo il server non deve gestire i redirect.<br><br>
+app-routing.module.ts
+```typescript
+  // ...
+  RouterModule.forRoot(appRoutes, {useHash: true}) // localhost:4200/#/
+```
 ## router-outlet
 app.component.html
 ```html
@@ -758,6 +765,7 @@ export class EditComponent implements CanComponentDeactivate, ... {
 }
 ```
 ## Passing Data to a Route
+### Static way
 ```typescript
 const routes: Routes = [
   { path: 'not-found', ..., data: object }
@@ -780,3 +788,92 @@ import { ActivatedRoute, Data } from '@angular/router';
     )
   }
 ```
+### Dynamic way with a Resolver Guard
+Un modo di gestire codice in modo asincrono prima ancora del constructor è affidargli un **Resolver**.<br>
+Esempio di codice di una resolver guard:
+```typescript
+import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+
+import { SomeService } from 'path';
+
+interface Example {
+  id: number;
+  name: string;
+}
+
+@Injectable()
+export class ExampleResolver implements Resolve<Example> {
+  constructor(private someService: SomeService) {}
+
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Example> | Promise<Example> | Example {
+    return this.someService.someFunc(+route.params['id']);
+  }
+}
+```
+> NOTA: come per le altre guardi va aggiunta ai providers
+
+di seguito un esempio di utilizzo nell'array che definisce le Routes
+```typescript
+const routes: Routes = [
+  { path: '/users/:id/:name', component: UsersComponent, resolve: {newVar1: ExampleResolver, newVar2: ExampleResolver2} }
+];
+```
+A questo punto i dati sono leggibili tramite l'observable this.route.data del caso precedente<br>
+```typescript
+// Sono all'interno della subscribe di this.route.data
+var1 = data['newVar1'];
+var2 = data['newVar2'];
+```
+> NOTA: notare che contrariamente alle altre guard il resover ha un oggetto json con variabile e resolver associato
+# Observables
+Gli observables aiutano a gestire i codice asincrono presenti nella libreria rxjs, in angular sono spesso utilizzati.<br>
+**Observable** = data source (Events, Http requests, Triggered in code, ...)<br>
+**Observer** (la subscribe) ha 3 modi (hooks, come ngOnit...) per gestire i dati ricevuti:
+- Handle Data -> cosa fare quando ricevo i dati
+- Handle Error -> cosa fare se ho un errore
+- Handle Completion -> cosa fare se il ricevimento è concluso
+```typescript
+import { Observable } from 'rxjs/Observale';
+import 'rxjs/Rx';
+// ...
+// Observable
+const myObservable = Observable.create((observer: Observer<string>) => {
+  setTimeout(() => {
+    observer.next('first');
+  }, 1000);
+  setTimeout(() => {
+    observer.next('second');
+  }, 2000);
+  setTimeout(() => {
+    observer.complete();
+  }, 3000);
+  setTimeout(() => { // Non verrà mai inviato, l'observer è completato
+    observer.next('third');
+  }, 4000);
+});
+// Observer con i 3 hooks
+myObservable.subscribe(
+  (data: string) => { console.log(data); },
+  (error: string) => { console.log(error); },
+  () => { console.log(data); },
+)
+```
+## Unsubscribe
+Se si ha un observable che non ha una fine, che sta sempre ad ascoltare, va fatta l'unsubscribe o rimarrà in ascolto anche DOPO la distruzione del component. (memory leak).<br>
+Un esempio di unsubscribe (in quel caso non necessaria): [Fetching route parameters](#fetching-route-parameters)<br>
+## Subject
+un altro oggetto fornito da rxjs che permette di avere un **obervable** ed un **observer** nello stesso oggetto. (usato quindi per inviare e ricevere dati in modo asincrono).
+```typescript
+import { Subject } from 'rxjs/Subject';
+
+exampleSub = new Subject<any>();
+
+exampleSub.next('string is sent');// Observable
+
+exampleSub.subscribe((data: any) => {// Observer
+  console.log(data);
+});
+```
+> NOTA: l'**unsubscribe** è ovviamente necessaria anche con questi oggetti.

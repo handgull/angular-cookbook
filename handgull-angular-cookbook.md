@@ -47,8 +47,12 @@
       1. [Static way](#static-way)
       2. [Dynamic way with a Resolver Guard](#dynamic-way-with-a-resolver-guard)
 10. [Observables](#observables)
+      1. [Operators](#operators)
    1. [Unsubscribe](#unsubscribe)
    2. [Subject](#subject)
+11. [Foms](#foms)
+   1. [Tempalate Driven (TD) approach](#tempalate-driven-td-approach)
+      1. [Validation](#validation)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -828,7 +832,7 @@ var2 = data['newVar2'];
 ```
 > NOTA: notare che contrariamente alle altre guard il resover ha un oggetto json con variabile e resolver associato
 # Observables
-Gli observables aiutano a gestire i codice asincrono presenti nella libreria rxjs, in angular sono spesso utilizzati.<br>
+Gli observables aiutano a gestire i codice asincrono presenti nella libreria rxjs, vengono anche forniti molti operatori utili al trattamento dei dati (map, pipe, ecc...) che trasformano l'observable a seconda della necessità; in angular sono spesso utilizzati.<br>
 **Observable** = data source (Events, Http requests, Triggered in code, ...)<br>
 **Observer** (la subscribe) ha 3 modi (hooks, come ngOnit...) per gestire i dati ricevuti:
 - Handle Data -> cosa fare quando ricevo i dati
@@ -836,7 +840,6 @@ Gli observables aiutano a gestire i codice asincrono presenti nella libreria rxj
 - Handle Completion -> cosa fare se il ricevimento è concluso
 ```typescript
 import { Observable } from 'rxjs/Observale';
-import 'rxjs/Rx';
 // ...
 // Observable
 const myObservable = Observable.create((observer: Observer<string>) => {
@@ -860,6 +863,28 @@ myObservable.subscribe(
   () => { console.log(data); },
 )
 ```
+### Operators
+Di seguito un breve esempio di come usare gli operators. Sulla documentazione si trovano molti altri operators [https://www.learnrxjs.io/operators/](https://www.learnrxjs.io/operators/)
+```typescript
+import { Observable } from 'rxjs/Observale';
+import 'rxjs/Rx'; //Importo gli operators
+
+const myObs = Observable.interval(100).map((data: number) => {
+  return data * 2;
+});
+```
+NEWER WAY: rxjs 6 without rxjs-compat
+```typescript
+import { Observable } from 'rxjs/Observale';
+import { map } from 'rxjs/operators'; //Importo solo gli operators necessari
+
+const myObs = Observable.interval(100)
+  .pipe(// gli operators ora vanno nella pipe
+    map((data: number) => {
+      return data * 2;
+    })
+);
+```
 ## Unsubscribe
 Se si ha un observable che non ha una fine, che sta sempre ad ascoltare, va fatta l'unsubscribe o rimarrà in ascolto anche DOPO la distruzione del component. (memory leak).<br>
 Un esempio di unsubscribe (in quel caso non necessaria): [Fetching route parameters](#fetching-route-parameters)<br>
@@ -877,3 +902,35 @@ exampleSub.subscribe((data: any) => {// Observer
 });
 ```
 > NOTA: l'**unsubscribe** è ovviamente necessaria anche con questi oggetti.
+# Foms
+Angular forms offre 2 tipi di approcci:
+- **Template driven** -> più veloce il setup, la form viene detectata dall'html
+- **Reactive** -> la struttura della form va definita da typescript, offre più controllo
+## Tempalate Driven (TD) approach
+> va importato nel .module.ts FormsModule from @angular/forms
+```html
+<form (ngSubmit)="onSubmit(form)" #form="ngForm"><!--Tutto viene fatto nel template, quindi mi serve una label-->
+<!--Potrei anche non passare la form come parametro ma accederci con un @ViewChild-->
+<!--NOTA: anche in quel caso il ViewChild non sarebbe di tipo ElementRef ma ngForm-->
+  <input ngModel name="email" required email><!--Ho usato 2 validators (vedi sotto)-->
+  <span *ngIf="!email.valid && username.email">email non valida</span>
+  <input ngModel name="password">
+  <select [ngModel]="'default-name'" name="choice">
+    <option value="1">1</option>
+    <option value="2">2</option>
+  </select>
+  <button type="submit" [disabled]="!form.valid">
+</form>
+```
+Analizzando l'oggetto si nota che la form ha dei controls, nel TD se ad esempio un campo non è valido viene aggiunta in automatico la class .ng-invalid
+> NOTA: inspect sugli element html per vedere le altre classi aggiunte da Angular
+```typescript
+import { ngForm } from '@angular/forms';
+
+onSubmit(form: ngForm) {
+  // stuff
+}
+```
+### Validation
+I Validators nel TD vanno messi come semplici attributi html, lista dei validators: [https://angular.io/api/forms/Validators](https://angular.io/api/forms/Validators).<br>
+Inoltre se si vuole usare i validators nativi di HTML5 va messo **ngNativeValidate** nel controllo interessato.

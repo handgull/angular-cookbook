@@ -173,7 +173,7 @@ html del component child
 ```html
 <div class="some-class">
   <!--altri tag-->
-  <div class="cusom-content">
+  <div class="custom-content">
     <ng-content></ng-content> <!--dico ad angular di mettere qui il contenuto del tag <child>-->
   </div>
 </div>
@@ -832,7 +832,7 @@ var2 = data['newVar2'];
 ```
 > NOTA: notare che contrariamente alle altre guard il resover ha un oggetto json con variabile e resolver associato
 # Observables
-Gli observables aiutano a gestire i codice asincrono presenti nella libreria rxjs, vengono anche forniti molti operatori utili al trattamento dei dati (map, pipe, ecc...) che trasformano l'observable a seconda della necessità; in angular sono spesso utilizzati.<br>
+Gli observables aiutano a gestire il codice asincrono. presenti nella libreria rxjs, vengono anche forniti molti operatori utili al trattamento dei dati (map, pipe, ecc...) che trasformano l'observable a seconda della necessità; in angular sono spesso utilizzati.<br>
 **Observable** = data source (Events, Http requests, Triggered in code, ...)<br>
 **Observer** (la subscribe) ha 3 modi (hooks, come ngOnit...) per gestire i dati ricevuti:
 - Handle Data -> cosa fare quando ricevo i dati
@@ -913,7 +913,7 @@ Angular forms offre 2 tipi di approcci:
 <!--Potrei anche non passare la form come parametro ma accederci con un @ViewChild-->
 <!--NOTA: anche in quel caso il ViewChild non sarebbe di tipo ElementRef ma ngForm-->
   <input ngModel name="email" required email><!--Ho usato 2 validators (vedi sotto)-->
-  <span *ngIf="!email.valid && username.email">email non valida</span>
+  <span *ngIf="!email.valid && email.touched">email non valida</span>
   <input ngModel name="password">
   <select [ngModel]="'default-name'" name="choice">
     <option value="1">1</option>

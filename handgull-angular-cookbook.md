@@ -53,6 +53,9 @@
 11. [Foms](#foms)
    1. [Tempalate Driven (TD) approach](#tempalate-driven-td-approach)
       1. [Validation](#validation)
+      2. [Grouping](#grouping)
+      3. [Handling radio buttons](#handling-radio-buttons)
+      4. [Setting/patching and resetting form values](#settingpatching-and-resetting-form-values)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -914,12 +917,12 @@ Angular forms offre 2 tipi di approcci:
 <!--NOTA: anche in quel caso il ViewChild non sarebbe di tipo ElementRef ma ngForm-->
   <input ngModel name="email" required email><!--Ho usato 2 validators (vedi sotto)-->
   <span *ngIf="!email.valid && email.touched">email non valida</span>
-  <input ngModel name="password">
-  <select [ngModel]="'default-name'" name="choice">
+  <input [(ngModel)]="otherVar" name="password"><!--Nonostante il Two-way-binding uso 'password' come riferimento della form-->
+  <select [ngModel]="2" name="choice"><!--Default value: 2-->
     <option value="1">1</option>
     <option value="2">2</option>
   </select>
-  <button type="submit" [disabled]="!form.valid">
+  <button type="submit" [disabled]="!form.valid">submit</button>
 </form>
 ```
 Analizzando l'oggetto si nota che la form ha dei controls, nel TD se ad esempio un campo non è valido viene aggiunta in automatico la class .ng-invalid
@@ -934,3 +937,49 @@ onSubmit(form: ngForm) {
 ### Validation
 I Validators nel TD vanno messi come semplici attributi html, lista dei validators: [https://angular.io/api/forms/Validators](https://angular.io/api/forms/Validators).<br>
 Inoltre se si vuole usare i validators nativi di HTML5 va messo **ngNativeValidate** nel controllo interessato.
+### Grouping
+```html
+<form (ngSubmit)="onSubmit(form)" #form="ngForm">
+  <div ngModelGroup="userData" #userData="ngModelGroup">
+    <input ngModel name="email" required email #email="ngModel"><!--Uso una label per riferirmi in modo semplificato non passando da userData-->
+    <span *ngIf="!email.valid && email.touched">email non valida</span>
+    <input ngModel name="password" required>
+  </div>
+  <select [ngModel]="2" name="choice">
+    <option value="1">1</option>
+    <option value="2">2</option>
+  </select>
+  <span *ngIf="!userData.valid && userData.touched">dati utente non validi</span>
+  <button type="submit" [disabled]="!form.valid">submit</button>
+</form>
+```
+### Handling radio buttons
+gestire i radio buttons con TD è uguale alla gestione di una normale input
+```html
+<!--...-->
+  <input type="radio" name="radiotest" value="1" ngModel> 1
+  <input type="radio" name="radiotest" value="2" ngModel required> 2
+  <!--esempio in un ngFor-->
+  <input *ngFor="let e of array" type="radio" name="radiotest" [value]="e" ngModel required> {{ e }}
+<!--...-->
+```
+### Setting/patching and resetting form values
+> Prima di settare i valori tramite i metodi forniti è necessario usare una **@VIewChild() form :NgForm**
+
+Sono forniti 2 metodi per settare i valori:
+- setValue -> setta i valori di tutti i controlli di tutta la form
+- patchValue -> modifica solo i controli specificati
+```typescript
+this.signupForm.setValue({
+  username: 'name',
+  password: 'pass'
+});
+
+this.signupForm.form.patchValue({
+  username: 'newName'
+});
+// Come accedere ai valori:
+console.log(this.signupForm.value.username) // newName
+this.signupForm.reset(); // Resetta tutti i valori e gli stati (touched ecc.)
+```
+> NOTA: posso anche usare setValue, patchValue e reset in modo specifico solo su di un control

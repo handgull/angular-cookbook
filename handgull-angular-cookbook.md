@@ -1,4 +1,7 @@
 ## Angular cookbook by hangull
+Table of Contents
+---
+---
 1. [Angular CLI](#angular-cli)
 2. [PackageManager (di default npm)](#packagemanager-di-default-npm)
 3. [General](#general)
@@ -56,6 +59,12 @@
       2. [Grouping](#grouping)
       3. [Handling radio buttons](#handling-radio-buttons)
       4. [Setting/patching and resetting form values](#settingpatching-and-resetting-form-values)
+   2. [Reactive approach](#reactive-approach)
+      1. [Getting access to controls](#getting-access-to-controls)
+      2. [Grouping controls](#grouping-controls)
+   3. [Arrays of Form Controls](#arrays-of-form-controls)
+   4. [Custom Validators](#custom-validators)
+      1. [Async custom validators](#async-custom-validators)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -236,13 +245,14 @@ someFunc() {
 }
 // ...
 ```
-component.html
+father.component.html
 ```html
 <component
   [customProp1]="42"
   [optionalAlias1]="true"
   (customEvent1)="myFancyFunc($event)"
   (optionalAlias2)="myFancyFunc($event)"></component>
+<!--$event ha i valori emessi dal emit es. 'father, read this'->
 ```
 # Angular Directives
 Le Directives sono istruzioni nel DOM, il selector consigliato è by attribute<br>
@@ -910,12 +920,22 @@ Angular forms offre 2 tipi di approcci:
 - **Template driven** -> più veloce il setup, la form viene detectata dall'html
 - **Reactive** -> la struttura della form va definita da typescript, offre più controllo
 ## Tempalate Driven (TD) approach
-> va importato nel .module.ts FormsModule from @angular/forms
+> importare FormsModule nel .module.ts
+```typescript
+import FormsModule from '@angular/forms'
+// ...
+imports: [
+  // ...
+  FormsModule
+],
+// ...
+```
 ```html
 <form (ngSubmit)="onSubmit(form)" #form="ngForm"><!--Tutto viene fatto nel template, quindi mi serve una label-->
 <!--Potrei anche non passare la form come parametro ma accederci con un @ViewChild-->
 <!--NOTA: anche in quel caso il ViewChild non sarebbe di tipo ElementRef ma ngForm-->
-  <input ngModel name="email" required email><!--Ho usato 2 validators (vedi sotto)-->
+  <input ngModel name="email" required email #email="ngModel"><!--Label necessaria per riferirsi-->
+  <!--Ho usato 2 validators (vedi sotto)-->
   <span *ngIf="!email.valid && email.touched">email non valida</span>
   <input [(ngModel)]="otherVar" name="password"><!--Nonostante il Two-way-binding uso 'password' come riferimento della form-->
   <select [ngModel]="2" name="choice"><!--Default value: 2-->
@@ -925,7 +945,7 @@ Angular forms offre 2 tipi di approcci:
   <button type="submit" [disabled]="!form.valid">submit</button>
 </form>
 ```
-Analizzando l'oggetto si nota che la form ha dei controls, nel TD se ad esempio un campo non è valido viene aggiunta in automatico la class .ng-invalid
+Analizzando l'oggetto si nota che la form ha dei controls, nel TD se ad esempio un campo non è valido viene aggiunta in automatico la class .ng-invalid (discorso valido anche per l'approccio Reactive)
 > NOTA: inspect sugli element html per vedere le altre classi aggiunte da Angular
 ```typescript
 import { ngForm } from '@angular/forms';
@@ -941,7 +961,7 @@ Inoltre se si vuole usare i validators nativi di HTML5 va messo **ngNativeValida
 ```html
 <form (ngSubmit)="onSubmit(form)" #form="ngForm">
   <div ngModelGroup="userData" #userData="ngModelGroup">
-    <input ngModel name="email" required email #email="ngModel"><!--Uso una label per riferirmi in modo semplificato non passando da userData-->
+    <input ngModel name="email" required email #email="ngModel">
     <span *ngIf="!email.valid && email.touched">email non valida</span>
     <input ngModel name="password" required>
   </div>
@@ -983,3 +1003,143 @@ console.log(this.signupForm.value.username) // newName
 this.signupForm.reset(); // Resetta tutti i valori e gli stati (touched ecc.)
 ```
 > NOTA: posso anche usare setValue, patchValue e reset in modo specifico solo su di un control
+## Reactive approach
+> importare ReactiveFormsModule nel .module.ts
+```typescript
+import ReactiveFormsModule from '@angular/forms'
+// ...
+imports: [
+  // ...
+  ReactiveFormsModule
+],
+// ...
+```
+Esempio di Reactive form:
+```typescript
+import { FormGroup, Validators } from '@angular/forms'
+// ...
+  form: FormGroup;
+
+  ngOninit() {
+    this.form = new FormGroup({
+      'username': new FormControl(null, [Validators.required, Validators.email]),
+      'password': new FormControl(null, Validators.required),
+      'gender': new FormControl('male'),
+    });
+  }
+}
+```
+```html
+<form [formGroup]="form" (ngSubmit)="submit()"><!--Non mi serve un ViewChild o un parametro, ho già l'oggetto-->
+  <input formControlName="username">
+  <input formControlName="password">
+  <input
+    formControlName="gender"
+    *ngFor="let g of genders"
+    type="radio"
+    [value]="g"> {{ g }}
+</form>
+```
+### Getting access to controls
+Se dovessi ad esempio fare un messaggio d'errore se l'username è invalido:
+```html
+<span *ngIf="!signupForm.get('username').valid && !signupForm.get('username').touched">Invalid username</span>
+<span *ngIf="!signupForm.valid && !signupForm.touched">Invalid form</span>
+```
+Posso anche fare un messaggio d'errore più specifico, grazie all'array errors del control
+```html
+<span *ngIf="!signupForm.get('username').errors['required']">The username is required</span>
+```
+### Grouping controls
+Riunire i controlli dentro a delle nested forms, ovvero una form dentro la form. Utile per ordine mentale e per avere i .valid ecc. di quella sezione.<br>
+Esempio di Reactive form con nested FormGroup:
+```typescript
+// ...
+  ngOninit() {
+    this.form = new FormGroup({
+      'userData': new FormGroup({
+        'username': new FormControl(null, [Validators.required, Validators.email]),
+        'password': new FormControl(null, Validators.required),
+      }),
+      'gender': new FormControl('male'),
+    });
+  }
+}
+```
+Getting access
+```html
+<div formGroupName="userData">
+<span *ngIf="!signupForm.get('userData.username').valid && !signupForm.get('userData.username').touched">Invalid username</span>
+<!--I path sono separati da dei .-->
+</div>
+```
+## Arrays of Form Controls
+Per fornire all'utente la possibilità di aggiungere campi in maniera dinamica
+```typescript
+import { FormArray, ... } from '@angular/forms'
+// ...
+  ngOninit() {
+    this.form = new FormGroup({
+      'name': new FormControl(null, Validators.required),
+      'hobbies': new FormArray([])
+    });
+  }
+
+  onAddHobby() {
+    const control = new FormControl(null, Validators.required);
+    // Senza cast esplicito ho un errore
+    (<FormArray>this.signupForm.get('hobbies')).push(control);
+  }
+}
+```
+associare il ts al html
+```html
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <!--...-->
+  <div formArrayName="hobbies">
+  <button (click)="onAddHobby()">Add field</button>
+  <input
+    *ngFor="let hobbyControl of form.get('hobbies').controls; let i=index"
+    [formControlName]="i">
+  </div>
+</form>
+```
+## Custom Validators
+```typescript
+  ngOninit() {
+    this.form = new FormGroup({
+      'name': new FormControl(null, [Validators.required, this.customValidator.bind(this)]),
+      // mi serve bindare la funzione al FormControl
+    });
+  }
+
+  customValidator(control: FormControl): {[s: string]: boolean } {
+    if (this.forbiddenNames.indexOf(control.value) !== -1) {
+      return {'nameIsForbidden': true}; // error code aggiunto nell'array errors
+    }
+    return null; // se è valid il validator deve ritornare null
+  }
+```
+### Async custom validators
+```typescript
+  ngOninit() {
+    this.form = new FormGroup({
+      'name': new FormControl(null, Validators.required, this.customAsyncValidator),
+      // mi serve bindare la funzione al FormControl
+    });
+  }
+
+  customAsyncValidator(control: FormControl): Promise<any> | Observable<any> {
+    const promise = new Promise<any>((resolve, reject) => {
+      setTimeout(() => {
+        if (control.value === 'value') {
+          resolve({'nameIsForbidden': true});
+        } else {
+          resolve(null);
+        }
+      }, 2000);
+    });
+    return promise
+  }
+```
+> L'html risultante nel tempo di attesa del validator asincrono avrà la classe **.ng-pending**

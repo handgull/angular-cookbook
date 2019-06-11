@@ -2,7 +2,6 @@
 Table of Contents
 ---
 ---
-<<<<<<< HEAD
 - [Angular CLI](#angular-cli)
 - [PackageManager (di default npm)](#packagemanager-di-default-npm)
 - [General](#general)
@@ -88,71 +87,6 @@ Table of Contents
   - [Reducers](#reducers)
   - [Adding Actions](#adding-actions)
 - [Serving Workers (for offline capabilities) (continua da 390)](#serving-workers-for-offline-capabilities-continua-da-390)
-=======
-1. [Angular CLI](#angular-cli)
-2. [PackageManager (di default npm)](#packagemanager-di-default-npm)
-3. [General](#general)
-   1. [Debug tools](#debug-tools)
-      1. [Sourcemaps](#sourcemaps)
-      2. [Augury](#augury)
-   2. [Local References (label)](#local-references-label)
-4. [Angular Components](#angular-components)
-   1. [Component templates](#component-templates)
-   2. [Selector (valido anche per @Directive)](#selector-valido-anche-per-directive)
-   3. [View Encapsulation](#view-encapsulation)
-   4. [Projecting content with ng-content](#projecting-content-with-ng-content)
-   5. [Component Lifecycle (hooks)](#component-lifecycle-hooks)
-5. [Databinding (comunicazione)](#databinding-comunicazione)
-   1. [Ouput Data](#ouput-data)
-   2. [React to Events](#react-to-events)
-   3. [Two-Way-Binding (Ouput + React to Events)](#two-way-binding-ouput--react-to-events)
-   4. [@Input and @Output](#input-and-output)
-6. [Angular Directives](#angular-directives)
-   1. [[(ngModel)] Directive](#ngmodel-directive)
-   2. [Built-in Structural directives:](#built-in-structural-directives)
-      1. [*ngIf](#ngif)
-      2. [*ngFor](#ngfor)
-      3. [*ngSwitch](#ngswitch)
-   3. [Built-in Attribute directives](#built-in-attribute-directives)
-      1. [ngStyle](#ngstyle)
-      2. [ngClass](#ngclass)
-   4. [Custom directives](#custom-directives)
-      1. [Custom attribute directive example](#custom-attribute-directive-example)
-      2. [Custom structural directive example](#custom-structural-directive-example)
-7. [Models (interfacce)](#models-interfacce)
-8. [Angular Services and Dependency Injection](#angular-services-and-dependency-injection)
-   1. [Hierarchical Injector](#hierarchical-injector)
-9. [Routing](#routing)
-   1. [router-outlet](#router-outlet)
-   2. [Router links](#router-links)
-   3. [Navigating Programmatically](#navigating-programmatically)
-   4. [Fetching route parameters](#fetching-route-parameters)
-   5. [Query Parameters and Fragments](#query-parameters-and-fragments)
-   6. [Nested Routes](#nested-routes)
-   7. [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
-   8. [Route Guards](#route-guards)
-      1. [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
-      2. [canDeactivate](#candeactivate)
-   9. [Passing Data to a Route](#passing-data-to-a-route)
-      1. [Static way](#static-way)
-      2. [Dynamic way with a Resolver Guard](#dynamic-way-with-a-resolver-guard)
-10. [Observables](#observables)
-      1. [Operators](#operators)
-   1. [Unsubscribe](#unsubscribe)
-   2. [Subject](#subject)
-11. [Foms](#foms)
-   1. [Tempalate Driven (TD) approach](#tempalate-driven-td-approach)
-      1. [Validation](#validation)
-      2. [Grouping](#grouping)
-      3. [Handling radio buttons](#handling-radio-buttons)
-      4. [Setting/patching and resetting form values](#settingpatching-and-resetting-form-values)
-   2. [Reactive approach](#reactive-approach)
-      1. [Getting access to controls](#getting-access-to-controls)
-      2. [Grouping controls](#grouping-controls)
-   3. [Arrays of Form Controls](#arrays-of-form-controls)
-   4. [Custom Validators](#custom-validators)
-      1. [Async custom validators](#async-custom-validators)
->>>>>>> b98bb64c498a95176addd03d8936481f3c71c3fd
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -1107,11 +1041,7 @@ Angular forms offre 2 tipi di approcci:
 ## Tempalate Driven (TD) approach
 > importare FormsModule nel .module.ts
 ```typescript
-<<<<<<< HEAD
 import { FormsModule } from '@angular/forms';
-=======
-import FormsModule from '@angular/forms'
->>>>>>> b98bb64c498a95176addd03d8936481f3c71c3fd
 // ...
 imports: [
   // ...
@@ -1262,11 +1192,7 @@ Getting access
 <!--I path sono separati da dei .-->
 </div>
 ```
-<<<<<<< HEAD
 ### Arrays of Form Controls
-=======
-## Arrays of Form Controls
->>>>>>> b98bb64c498a95176addd03d8936481f3c71c3fd
 Per fornire all'utente la possibilità di aggiungere campi in maniera dinamica
 ```typescript
 import { FormArray, ... } from '@angular/forms'
@@ -1297,11 +1223,7 @@ associare il ts al html
   </div>
 </form>
 ```
-<<<<<<< HEAD
 ### Custom Validators
-=======
-## Custom Validators
->>>>>>> b98bb64c498a95176addd03d8936481f3c71c3fd
 ```typescript
   ngOninit() {
     this.form = new FormGroup({
@@ -1317,11 +1239,7 @@ associare il ts al html
     return null; // se è valid il validator deve ritornare null
   }
 ```
-<<<<<<< HEAD
 #### Async custom validators
-=======
-### Async custom validators
->>>>>>> b98bb64c498a95176addd03d8936481f3c71c3fd
 ```typescript
   ngOninit() {
     this.form = new FormGroup({
@@ -1344,7 +1262,6 @@ associare il ts al html
   }
 ```
 > L'html risultante nel tempo di attesa del validator asincrono avrà la classe **.ng-pending**
-<<<<<<< HEAD
 ### Reacting to Status or Value Changes
 Posso usare 2 metodi che ritonano un observable per monitorare il cambio di valore o di stato della form/del singolo campo:
 - valueChanges
@@ -1568,5 +1485,3 @@ L'intero codice (spesso js) di un sito web gira sul browser in un singolo thread
 ```bash
 ng add @angular/pwa # Installa il ServiceWorkerModule + setta alcuni files
 ```
-=======
->>>>>>> b98bb64c498a95176addd03d8936481f3c71c3fd

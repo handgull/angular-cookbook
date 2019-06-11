@@ -2,69 +2,91 @@
 Table of Contents
 ---
 ---
-1. [Angular CLI](#angular-cli)
-2. [PackageManager (di default npm)](#packagemanager-di-default-npm)
-3. [General](#general)
-   1. [Debug tools](#debug-tools)
-      1. [Sourcemaps](#sourcemaps)
-      2. [Augury](#augury)
-   2. [Local References (label)](#local-references-label)
-4. [Angular Components](#angular-components)
-   1. [Component templates](#component-templates)
-   2. [Selector (valido anche per @Directive)](#selector-valido-anche-per-directive)
-   3. [View Encapsulation](#view-encapsulation)
-   4. [Projecting content with ng-content](#projecting-content-with-ng-content)
-   5. [Component Lifecycle (hooks)](#component-lifecycle-hooks)
-5. [Databinding (comunicazione)](#databinding-comunicazione)
-   1. [Ouput Data](#ouput-data)
-   2. [React to Events](#react-to-events)
-   3. [Two-Way-Binding (Ouput + React to Events)](#two-way-binding-ouput--react-to-events)
-   4. [@Input and @Output](#input-and-output)
-6. [Angular Directives](#angular-directives)
-   1. [[(ngModel)] Directive](#ngmodel-directive)
-   2. [Built-in Structural directives:](#built-in-structural-directives)
-      1. [*ngIf](#ngif)
-      2. [*ngFor](#ngfor)
-      3. [*ngSwitch](#ngswitch)
-   3. [Built-in Attribute directives](#built-in-attribute-directives)
-      1. [ngStyle](#ngstyle)
-      2. [ngClass](#ngclass)
-   4. [Custom directives](#custom-directives)
-      1. [Custom attribute directive example](#custom-attribute-directive-example)
-      2. [Custom structural directive example](#custom-structural-directive-example)
-7. [Models (interfacce)](#models-interfacce)
-8. [Angular Services and Dependency Injection](#angular-services-and-dependency-injection)
-   1. [Hierarchical Injector](#hierarchical-injector)
-9. [Routing](#routing)
-   1. [router-outlet](#router-outlet)
-   2. [Router links](#router-links)
-   3. [Navigating Programmatically](#navigating-programmatically)
-   4. [Fetching route parameters](#fetching-route-parameters)
-   5. [Query Parameters and Fragments](#query-parameters-and-fragments)
-   6. [Nested Routes](#nested-routes)
-   7. [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
-   8. [Route Guards](#route-guards)
-      1. [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
-      2. [canDeactivate](#candeactivate)
-   9. [Passing Data to a Route](#passing-data-to-a-route)
-      1. [Static way](#static-way)
-      2. [Dynamic way with a Resolver Guard](#dynamic-way-with-a-resolver-guard)
-10. [Observables](#observables)
-      1. [Operators](#operators)
-   1. [Unsubscribe](#unsubscribe)
-   2. [Subject](#subject)
-11. [Foms](#foms)
-   1. [Tempalate Driven (TD) approach](#tempalate-driven-td-approach)
-      1. [Validation](#validation)
-      2. [Grouping](#grouping)
-      3. [Handling radio buttons](#handling-radio-buttons)
-      4. [Setting/patching and resetting form values](#settingpatching-and-resetting-form-values)
-   2. [Reactive approach](#reactive-approach)
-      1. [Getting access to controls](#getting-access-to-controls)
-      2. [Grouping controls](#grouping-controls)
-   3. [Arrays of Form Controls](#arrays-of-form-controls)
-   4. [Custom Validators](#custom-validators)
-      1. [Async custom validators](#async-custom-validators)
+- [Angular CLI](#angular-cli)
+- [PackageManager (di default npm)](#packagemanager-di-default-npm)
+- [General](#general)
+  - [Debug tools](#debug-tools)
+    - [Sourcemaps](#sourcemaps)
+    - [Augury](#augury)
+  - [Local References (label)](#local-references-label)
+  - [Unit Test](#unit-test)
+    - [Isolated vs Non-Isolated Tests](#isolated-vs-non-isolated-tests)
+- [Angular Components](#angular-components)
+  - [Component templates](#component-templates)
+  - [Selector (valido anche per @Directive)](#selector-valido-anche-per-directive)
+  - [View Encapsulation](#view-encapsulation)
+  - [Projecting content with ng-content](#projecting-content-with-ng-content)
+  - [Component Lifecycle (hooks)](#component-lifecycle-hooks)
+- [Databinding (comunicazione)](#databinding-comunicazione)
+  - [Ouput Data](#ouput-data)
+  - [React to Events](#react-to-events)
+  - [Two-Way-Binding (Ouput + React to Events)](#two-way-binding-ouput--react-to-events)
+  - [@Input and @Output](#input-and-output)
+- [Angular Directives](#angular-directives)
+  - [[(ngModel)] Directive](#ngmodel-directive)
+  - [Built-in Structural directives:](#built-in-structural-directives)
+    - [*ngIf](#ngif)
+    - [*ngFor](#ngfor)
+    - [*ngSwitch](#ngswitch)
+  - [Built-in Attribute directives](#built-in-attribute-directives)
+    - [ngStyle](#ngstyle)
+    - [ngClass](#ngclass)
+  - [Custom directives](#custom-directives)
+    - [Custom attribute directive example](#custom-attribute-directive-example)
+    - [Custom structural directive example](#custom-structural-directive-example)
+- [Models (interfacce)](#models-interfacce)
+- [Angular Services and Dependency Injection](#angular-services-and-dependency-injection)
+  - [Hierarchical Injector](#hierarchical-injector)
+- [Routing](#routing)
+  - [router-outlet](#router-outlet)
+  - [Router links](#router-links)
+  - [Navigating Programmatically](#navigating-programmatically)
+  - [Fetching route parameters](#fetching-route-parameters)
+  - [Query Parameters and Fragments](#query-parameters-and-fragments)
+  - [Nested Routes](#nested-routes)
+  - [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
+  - [Route Guards](#route-guards)
+    - [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
+    - [canDeactivate](#candeactivate)
+  - [Passing Data to a Route](#passing-data-to-a-route)
+    - [Static way](#static-way)
+    - [Dynamic way with a Resolver Guard](#dynamic-way-with-a-resolver-guard)
+- [Observables](#observables)
+    - [Operators](#operators)
+      - [Catching errors](#catching-errors)
+  - [Unsubscribe](#unsubscribe)
+  - [Subject](#subject)
+- [Forms](#forms)
+  - [Tempalate Driven (TD) approach](#tempalate-driven-td-approach)
+    - [Validation](#validation)
+    - [Grouping](#grouping)
+    - [Handling radio buttons](#handling-radio-buttons)
+    - [Setting/patching and resetting form values](#settingpatching-and-resetting-form-values)
+  - [Reactive approach](#reactive-approach)
+    - [Getting access to controls](#getting-access-to-controls)
+    - [Grouping controls](#grouping-controls)
+    - [Arrays of Form Controls](#arrays-of-form-controls)
+    - [Custom Validators](#custom-validators)
+      - [Async custom validators](#async-custom-validators)
+    - [Reacting to Status or Value Changes](#reacting-to-status-or-value-changes)
+- [Pipes](#pipes)
+  - [Built in pipes](#built-in-pipes)
+    - [Async pipe](#async-pipe)
+  - [Parametrizing Pipes](#parametrizing-pipes)
+  - [Chaining Multiple Pipes](#chaining-multiple-pipes)
+  - [Custom Pipe + Parametrizing](#custom-pipe--parametrizing)
+  - [Pure and Impure Pipes](#pure-and-impure-pipes)
+- [Making Http Requests](#making-http-requests)
+  - [POST, GET, PUT requests (Continua da 307)](#post-get-put-requests-continua-da-307)
+- [Authentication](#authentication)
+  - [Esempio di Auth Interceptor](#esempio-di-auth-interceptor)
+- [Modules (continua da lezione 279)](#modules-continua-da-lezione-279)
+  - [Understanding Feature Modules](#understanding-feature-modules)
+- [Working with NgRx (continua da lezione 323)](#working-with-ngrx-continua-da-lezione-323)
+  - [Redux Approach](#redux-approach)
+  - [Reducers](#reducers)
+  - [Adding Actions](#adding-actions)
+- [Serving Workers (for offline capabilities) (continua da 390)](#serving-workers-for-offline-capabilities-continua-da-390)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -72,6 +94,7 @@ ng g c optionalPath/newComponent # Genera un componente (opzione --spec=false pe
 ng g d optionalPath/newDirective # Genera directive
 ng g s optionalPath/newService # Genera directive
 ng g g optionalPath/newService # Genera guard
+ng g p optionalPath/newPipe # Genera pipe
 ```
 # PackageManager (di default npm)
 ```bash
@@ -119,6 +142,91 @@ export class ExampleClass {
 
 > NOTA<br>
 > Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile NON FARLO essendoci modi migliori forniti da Angular.
+## Unit Test
+Aiutano a testare automaticamente il funzionamento e se le injection funzionano come programmato (components, services, pipes ....)
+- Guards against breaking changes
+- Analize code behavior (expected and unexpected)
+- Reveal design mistakes
+```bash
+ng test # Per eseguire i test
+```
+> Further resources:<br>
+> [https://angular.io/docs/ts/latest/guide/testing.html](https://angular.io/docs/ts/latest/guide/testing.html)<br>
+> [https://semaphoreci.com/community/tutorials/testing-components-in-angular-2-with-jasmine](https://semaphoreci.com/community/tutorials/testing-components-in-angular-2-with-jasmine)<br>
+> ONLY CLI:<br>
+> [Unit Tests](https://github.com/angular/angular-cli/wiki/test)<br>
+> [E2E Tests](https://github.com/angular/angular-cli/wiki/e2e)
+
+.spec.ts
+```typescript
+import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing'; // Se ho dentro un router-outlet
+/* NOTA: per vedere come usarlo guardare le further resources */
+describe('AppComponent', () => {
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({ // Configurazione del modulo di test
+      imports: [
+        RouterTestingModule
+      ],
+      declarations: [
+        AppComponent
+      ],
+    }).compileComponents();
+  }));
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance; // Istanza del component
+    expect(app).toBeTruthy();
+  });
+
+  it('should inject the service and get the name', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    const userService = fixture.debugElement.injector.get(UserService); // inject del service
+    fixture.detectChanges(); // Per aggiornare le proprietà ecc
+    expect(UserService.user.name).toEqual(app.user.name);
+  });
+
+  /* Simulating Async Tasks */
+  it('should fetch data if called asynchronously', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    const dataService = fixture.debugElement.injector.get(DataService); // inject
+    fixture.detectChanges(); // Per aggiornare le proprietà ecc
+    let spy = spyOn(dataService, 'getDetails') // Spio il metodo che ritorna un observale: 'getDetails'
+      .and.returnValue(Promise.resolve('Data')); // Do un altro valore di return alla funzione
+    fixture.detectChanges(); // Per aggiornare le proprietà ecc
+    fixture.whenStable().then(() => { // Quando finisco tutte le attività async
+      expect(app.data).toBe('Data');
+    });
+  }));
+
+  it('should fetch data if called asynchronously', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    const dataService = fixture.debugElement.injector.get(DataService); // inject
+    fixture.detectChanges(); // Per aggiornare le proprietà ecc
+    let spy = spyOn(dataService, 'getDetails') // Spio il metodo che ritorna un observale: 'getDetails'
+      .and.returnValue(Promise.resolve('Data')); // Do un altro valore di return alla funzione
+    fixture.detectChanges(); // Per aggiornare le proprietà ecc
+    tick(); // Termina IMMEDIATAMETE ogni async task
+    expect(app.data).toBe('Data');
+  }));
+});
+```
+### Isolated vs Non-Isolated Tests
+Spesso per testare ad esempio delle semplici pipe non ho bisogno di molte import
+```typescript
+import { ReversePipe } from 'path';
+
+describe('ReversePipe', () => {
+  it('should reverse words', () => {
+    const reversePipe = new ReversePipe();
+    expect(reversePipe.transform('hello')).toEqual('olleh');
+  });
+});
+```
 # Angular Components
 ## Component templates
 Usare un inline-template al posto di usare templateUrl/styleUrls
@@ -650,7 +758,7 @@ Fake service che notifica tramite promise un login:
   }
 // ...
 ```
-auth-guard.service.ts:
+auth-guard.guard.ts:
 ```typescript
 import {
   CanActivate,
@@ -658,7 +766,7 @@ import {
   RouterStateSnapshot,
   Router
 } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { FakeService } from 'path';
 
@@ -680,7 +788,7 @@ export class AuthGuard implements CanActivate {
   }
 }
 ```
-La guardia va aggiunta ai providers del .module.ts:
+La guardia va aggiunta ai providers del modulo di routing del modulo:
 ```typescript
 import { AuthGuard } from 'path';
 import { FakeService } from 'path';
@@ -877,7 +985,8 @@ myObservable.subscribe(
 )
 ```
 ### Operators
-Di seguito un breve esempio di come usare gli operators. Sulla documentazione si trovano molti altri operators [https://www.learnrxjs.io/operators/](https://www.learnrxjs.io/operators/)
+Di seguito un breve esempio di come usare gli operators. Sulla documentazione si trovano molti altri operators [https://www.learnrxjs.io/operators/](https://www.learnrxjs.io/operators/)<br>
+Ho bisogno del pacchetto rxjs-compat
 ```typescript
 import { Observable } from 'rxjs/Observale';
 import 'rxjs/Rx'; //Importo gli operators
@@ -898,13 +1007,23 @@ const myObs = Observable.interval(100)
     })
 );
 ```
+#### Catching errors
+```typescript
+import { Observable } from 'rxjs/Observable';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+  ....pipe(catchError(error => {
+    return throwError(...)
+  }))
+```
 ## Unsubscribe
 Se si ha un observable che non ha una fine, che sta sempre ad ascoltare, va fatta l'unsubscribe o rimarrà in ascolto anche DOPO la distruzione del component. (memory leak).<br>
 Un esempio di unsubscribe (in quel caso non necessaria): [Fetching route parameters](#fetching-route-parameters)<br>
 ## Subject
 un altro oggetto fornito da rxjs che permette di avere un **obervable** ed un **observer** nello stesso oggetto. (usato quindi per inviare e ricevere dati in modo asincrono).
 ```typescript
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 exampleSub = new Subject<any>();
 
@@ -915,14 +1034,14 @@ exampleSub.subscribe((data: any) => {// Observer
 });
 ```
 > NOTA: l'**unsubscribe** è ovviamente necessaria anche con questi oggetti.
-# Foms
+# Forms
 Angular forms offre 2 tipi di approcci:
 - **Template driven** -> più veloce il setup, la form viene detectata dall'html
 - **Reactive** -> la struttura della form va definita da typescript, offre più controllo
 ## Tempalate Driven (TD) approach
 > importare FormsModule nel .module.ts
 ```typescript
-import FormsModule from '@angular/forms'
+import { FormsModule } from '@angular/forms';
 // ...
 imports: [
   // ...
@@ -1073,7 +1192,7 @@ Getting access
 <!--I path sono separati da dei .-->
 </div>
 ```
-## Arrays of Form Controls
+### Arrays of Form Controls
 Per fornire all'utente la possibilità di aggiungere campi in maniera dinamica
 ```typescript
 import { FormArray, ... } from '@angular/forms'
@@ -1104,7 +1223,7 @@ associare il ts al html
   </div>
 </form>
 ```
-## Custom Validators
+### Custom Validators
 ```typescript
   ngOninit() {
     this.form = new FormGroup({
@@ -1120,7 +1239,7 @@ associare il ts al html
     return null; // se è valid il validator deve ritornare null
   }
 ```
-### Async custom validators
+#### Async custom validators
 ```typescript
   ngOninit() {
     this.form = new FormGroup({
@@ -1143,3 +1262,226 @@ associare il ts al html
   }
 ```
 > L'html risultante nel tempo di attesa del validator asincrono avrà la classe **.ng-pending**
+### Reacting to Status or Value Changes
+Posso usare 2 metodi che ritonano un observable per monitorare il cambio di valore o di stato della form/del singolo campo:
+- valueChanges
+- statusChanges
+```typescript
+  ngOninit() {
+    this.form.valueChanges.subscribe((value) => { // Ad ogni cambio di valore loggo il nuovo valore
+      console.log(value);
+    });
+
+    this.form.statusChanges.subscribe((status) => {
+      console.log(status); // e.g. INVALID, PENDING (async task), VALID ecc...
+    });
+  }
+```
+# Pipes
+Feature di angular che permette di **trasformare gli output** nel template in una maniera facile e veloce.<br>
+## Built in pipes
+- uppercase
+- date (dato un oggetto Date stampa la data in un formato più leggibile)
+- async
+> Guardare la documentazione
+
+USE CASE: voglio stampare una stringa in maiuscolo SOLO quando avviene il suo **rendering**
+```html
+<div>{{ stringVar | uppercase }}</div>
+```
+### Async pipe
+Aiuta a lavorare con i dati asincroni, facendo una specie di subscribe automatica
+```html
+<div>{{ stringPromise | async | uppercase }}</div>
+```
+## Parametrizing Pipes
+Per fornire dei parametri ad una pipe si utilizzano i :, se la pipe può gestire n parametri avremo una struttura del tipo *pipe:param1:param2:...*
+```html
+<div>{{ dateVar | date:'fullDate' }}</div>
+```
+## Chaining Multiple Pipes
+Le pipes sono facilmente combinabili:
+```html
+<div>{{ dateVar | date:'fullDate' | uppercase }}</div>
+```
+> NOTA: le pipe vengono eseguite da sinistra a destra, se in questo esempio scambiassi l'ordine delle pipes avrei un errore!
+## Custom Pipe + Parametrizing
+e.g. shorten.pipe.ts
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'shorten' // Nome che uso nei template per chiamare la pipe
+})
+export class ShortenPipe implements PipeTransform {
+  /* Se non voglio parametri per la pipe allora metto solo value */
+  transform(value: any, limit: number) { // Metodo dell'interfaccia con 1 parametro (e.g. shorten:5)
+    if (value.length <= limit) {
+      return value;
+    } else {
+      return value.substr(0, limit) + '...';
+    }
+  }
+}
+```
+> Questa classe va aggiunta all'array di **declarations** del modulo
+
+> Applicazione carina: filtrare gli array (ritornando un array dello stesso tipo)
+## Pure and Impure Pipes
+Un problema che nasce quando applichiamo una pipe ad un array: se l'array si aggiorna, la pipe non è influenzata dal cambiamento. Questo può essere cambiato, con grandi peggioramenti in fatto di performance.
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'filter',
+  pure: false // Così facendo la pipe si aggiorna ad ogni cambiamento
+})
+```
+# Making Http Requests
+Per effettuare richieste http angular fornisce due strumenti:
+- { Http } from '@angular/http'<br>
+    - **Più vecchio** e con meno features (e.g. non supporta l'interceptor)
+    - Le risposte erano di tipo Response
+    - Differente gestione degli headers:
+```typescript
+  myPost() {
+    const headers = new Headers({'Content-Type': 'application/json'}); // Header di default
+    return this.http.post('url', body, {headers: headers}); // Ritorno l'observable
+    /* NOTA: stesso discorso per aggiungere headers nella GET (il parametro degli headers è opzionale) */
+  }
+```
+- { HttpClientModule } from '@angular/common/http'
+    - Ha l'interceptor
+    - Posso specificare il tipo ritornato
+
+Preferibile quindi l'utilizzo del secondo modulo.
+## POST, GET, PUT requests (Continua da 307)
+```typescript
+// .module.ts
+import { HttpClientModule } from '@angular/common/http';
+```
+example.service.ts
+```typescript
+import { HttpClient } from '@angular/common/http';
+import { Headers } from '@angular/http';
+...
+  constructor(private http: HttpClient) {}
+
+  myPost() {
+    return this.http.post<ReturnedType>('url', body);
+  }
+
+  myPut() { // Identica a POST
+    return this.http.put('url', body);
+  }
+
+  myGet() {
+    /* modo figo per evitare problemi con caratteri strani nei query params: */
+    const params = new HttpParams()
+      .set('strinParam', strinParam)
+      .set('numParam', numParam.toString());
+    return this.http.get<ReturnedType>('url', {params}); // url?strinParam=tot&numParam=42
+  }
+...
+```
+# Authentication
+In angular non avendo qualcosa come le sessioni PHP (il server non ricorda il client) si utilizza un token salvato in un cookie. Questo token viene decriptato lato server e spesso è messo negli header di ogni richiesta http tramite l'utilizzo di un **interceptor**.<br>
+Un ottimo token con ottima documentazione: [JWT](https://jwt.io/)
+## Esempio di Auth Interceptor
+Un iinterceptor intercetta le richieste http e le modifica secondo le necessità, non serve quindi solo per autenticazioni ma ha più utilizzi.<br>
+auth-interceptor.js
+```typescript
+import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { AuthService } from './auth.service';
+
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+
+  constructor(private authService: AuthService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const authToken = this.authService.getToken(); // Metodo da implementare che ritorna il token nel cookie
+    const authRequest = req.clone({
+      headers: req.headers.set('Authorization', authToken)
+    });
+    return next.handle(authRequest);
+  }
+}
+```
+va aggiunta la classe nei providers del .module.ts
+```typescript
+...
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    ...
+  ],
+...
+```
+# Modules (continua da lezione 279)
+**Tutto deve essere messo dentro uno o più moduli** (un component può avere un solo module -> se lo si vuole in più moduli bisogna usare uno **SharedModule**), perchè Angular non conosce l'intero file system, va **dichiarato**.<br>
+Nei moduli abbiamo una lista di array:
+- **declarations**:<br>
+  Qui definisco i componenti, direttive, pipes, ... usati dal modulo.
+- **imports**:<br>
+  La lista dei moduli che importo nel mio modulo.
+- **providers**:<br>
+  Definisce quali servizi con instanza globale uso in questo modulo.
+- **bootsrap**:<br>
+  Definisce il root component.
+## Understanding Feature Modules
+Feature module = modulo custom fatto da noi
+# Working with NgRx (continua da lezione 323)
+NgRx è l'introduzione del pattern redux su angular
+> Redux is a predictable state container for JavaScript.
+
+**PRO**
+- **Centralizza** lo stato dell'applicazione, evitando comportamenti indesiderati.
+> NOTA: uno stato è ad esempio se un utente è loggato o una risorsa è caricata.
+- Da all'applicazione maggiore **consistenza**
+- Rende più facili i test ed il debug
+- Il pattern redux fornisce una buona esperienza di sviluppo
+
+**CONTRO**
+- Curva di apprendimento (non molto complesso, ma comunque va visto un attimo)
+- Impone delle limitazioni
+- Aggiunge complessità al progetto
+
+[https://ngrx.io/](https://ngrx.io/)<br>
+## Redux Approach
+- Un posto centrale da cui gestire tutti gli stati, chiamato **Store**
+- Per cambiarne gli stati si utilizzano le **Actions** che chiamano a loro volta dei **Reducers** che salvano il reduced state in modo immutabile
+## Reducers
+> Installare il package NgRx: **npm install --save @ngrx/store**
+
+some-service.reducers.ts
+```typescript
+import { Action } from '@ngrx/store';
+/* Questi argomenti sono passati in automatico da NgRx
+  - state -> stato attuale dell'applicazione, la prima volta verranno usati gli initial state
+*/
+export const ADD_ITEM = 'ADD_ITEM';
+
+const initialState = {
+  // stuff
+};
+
+/* con = initialState faccio in modo che se lo stato non è presente uso l'initialState */
+export function someServiceReducer(state = initialState, action: Action) {
+  switch (action.type) {
+    case ADD_INGREDIENT:
+      return {
+        ...state,
+        items: [...state.items, action]
+      }
+  }
+  return state;
+}
+```
+## Adding Actions
+# Serving Workers (for offline capabilities) (continua da 390)
+L'intero codice (spesso js) di un sito web gira sul browser in un singolo thread; possiamo però fare girare del codice anche in un altro thread "decoupled", ovvero separato dall'HTML -> Web workers -> Service Workers
+```bash
+ng add @angular/pwa # Installa il ServiceWorkerModule + setta alcuni files
+```

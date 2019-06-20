@@ -2,91 +2,72 @@
 Table of Contents
 ---
 ---
-- [Angular CLI](#angular-cli)
-- [PackageManager (di default npm)](#packagemanager-di-default-npm)
-- [General](#general)
-  - [Debug tools](#debug-tools)
-    - [Sourcemaps](#sourcemaps)
-    - [Augury](#augury)
-  - [Local References (label)](#local-references-label)
-  - [Unit Test](#unit-test)
-    - [Isolated vs Non-Isolated Tests](#isolated-vs-non-isolated-tests)
-- [Angular Components](#angular-components)
-  - [Component templates](#component-templates)
-  - [Selector (valido anche per @Directive)](#selector-valido-anche-per-directive)
-  - [View Encapsulation](#view-encapsulation)
-  - [Projecting content with ng-content](#projecting-content-with-ng-content)
-  - [Component Lifecycle (hooks)](#component-lifecycle-hooks)
-- [Databinding (comunicazione)](#databinding-comunicazione)
-  - [Ouput Data](#ouput-data)
-  - [React to Events](#react-to-events)
-  - [Two-Way-Binding (Ouput + React to Events)](#two-way-binding-ouput--react-to-events)
-  - [@Input and @Output](#input-and-output)
-- [Angular Directives](#angular-directives)
-  - [[(ngModel)] Directive](#ngmodel-directive)
-  - [Built-in Structural directives:](#built-in-structural-directives)
-    - [*ngIf](#ngif)
-    - [*ngFor](#ngfor)
-    - [*ngSwitch](#ngswitch)
-  - [Built-in Attribute directives](#built-in-attribute-directives)
-    - [ngStyle](#ngstyle)
-    - [ngClass](#ngclass)
-  - [Custom directives](#custom-directives)
-    - [Custom attribute directive example](#custom-attribute-directive-example)
-    - [Custom structural directive example](#custom-structural-directive-example)
-- [Models (interfacce)](#models-interfacce)
-- [Angular Services and Dependency Injection](#angular-services-and-dependency-injection)
-  - [Hierarchical Injector](#hierarchical-injector)
-- [Routing](#routing)
+- [Angular CLI](#Angular-CLI)
+- [PackageManager (di default npm)](#PackageManager-di-default-npm)
+- [General](#General)
+  - [Debug tools](#Debug-tools)
+    - [Sourcemaps](#Sourcemaps)
+    - [Augury](#Augury)
+  - [Local References (label)](#Local-References-label)
+  - [Gestione i18n semplice ed efficace](#Gestione-i18n-semplice-ed-efficace)
+  - [Unit Test](#Unit-Test)
+    - [Isolated vs Non-Isolated Tests](#Isolated-vs-Non-Isolated-Tests)
+- [Angular Components](#Angular-Components)
+  - [Component templates](#Component-templates)
+  - [Selector (valido anche per @Directive)](#Selector-valido-anche-per-Directive)
+  - [View Encapsulation](#View-Encapsulation)
+  - [Projecting content with ng-content](#Projecting-content-with-ng-content)
+  - [Component Lifecycle (hooks)](#Component-Lifecycle-hooks)
+- [Databinding (comunicazione)](#Databinding-comunicazione)
+  - [Ouput Data](#Ouput-Data)
+  - [React to Events](#React-to-Events)
+  - [Two-Way-Binding (Ouput + React to Events)](#Two-Way-Binding-Ouput--React-to-Events)
+  - [@Input and @Output](#Input-and-Output)
+  - [@ViewChild() and @ContentChild()](#ViewChild-and-ContentChild)
+- [Angular Directives](#Angular-Directives)
+  - [[(ngModel)] Directive](#ngModel-Directive)
+  - [Built-in Structural directives:](#Built-in-Structural-directives)
+    - [*ngIf](#ngIf)
+    - [*ngFor](#ngFor)
+    - [*ngSwitch](#ngSwitch)
+  - [Built-in Attribute directives](#Built-in-Attribute-directives)
+    - [ngStyle](#ngStyle)
+    - [ngClass](#ngClass)
+  - [Custom directives](#Custom-directives)
+    - [Custom attribute directive example](#Custom-attribute-directive-example)
+    - [Custom structural directive example](#Custom-structural-directive-example)
+- [Models (interfacce)](#Models-interfacce)
+- [Angular Services and Dependency Injection](#Angular-Services-and-Dependency-Injection)
+  - [Hierarchical Injector](#Hierarchical-Injector)
+- [Routing](#Routing)
   - [router-outlet](#router-outlet)
-  - [Router links](#router-links)
-  - [Navigating Programmatically](#navigating-programmatically)
-  - [Fetching route parameters](#fetching-route-parameters)
-  - [Query Parameters and Fragments](#query-parameters-and-fragments)
-  - [Nested Routes](#nested-routes)
-  - [Redirecting and Wildcard Routes](#redirecting-and-wildcard-routes)
-  - [Route Guards](#route-guards)
-    - [Protecting Child (nested) Routes with canActivateChild](#protecting-child-nested-routes-with-canactivatechild)
-    - [canDeactivate](#candeactivate)
-  - [Passing Data to a Route](#passing-data-to-a-route)
-    - [Static way](#static-way)
-    - [Dynamic way with a Resolver Guard](#dynamic-way-with-a-resolver-guard)
-- [Observables](#observables)
-    - [Operators](#operators)
-      - [Catching errors](#catching-errors)
-  - [Unsubscribe](#unsubscribe)
-  - [Subject](#subject)
-- [Forms](#forms)
-  - [Tempalate Driven (TD) approach](#tempalate-driven-td-approach)
-    - [Validation](#validation)
-    - [Grouping](#grouping)
-    - [Handling radio buttons](#handling-radio-buttons)
-    - [Setting/patching and resetting form values](#settingpatching-and-resetting-form-values)
-  - [Reactive approach](#reactive-approach)
-    - [Getting access to controls](#getting-access-to-controls)
-    - [Grouping controls](#grouping-controls)
-    - [Arrays of Form Controls](#arrays-of-form-controls)
-    - [Custom Validators](#custom-validators)
-      - [Async custom validators](#async-custom-validators)
-    - [Reacting to Status or Value Changes](#reacting-to-status-or-value-changes)
-- [Pipes](#pipes)
-  - [Built in pipes](#built-in-pipes)
-    - [Async pipe](#async-pipe)
-  - [Parametrizing Pipes](#parametrizing-pipes)
-  - [Chaining Multiple Pipes](#chaining-multiple-pipes)
-  - [Custom Pipe + Parametrizing](#custom-pipe--parametrizing)
-  - [Pure and Impure Pipes](#pure-and-impure-pipes)
-- [Making Http Requests](#making-http-requests)
-  - [POST, GET, PUT requests (Continua da 307)](#post-get-put-requests-continua-da-307)
-- [Authentication](#authentication)
-  - [Esempio di Auth Interceptor](#esempio-di-auth-interceptor)
-- [Modules (continua da lezione 279)](#modules-continua-da-lezione-279)
-  - [Understanding Feature Modules](#understanding-feature-modules)
-- [Working with NgRx (continua da lezione 323)](#working-with-ngrx-continua-da-lezione-323)
-  - [Redux Approach](#redux-approach)
-  - [Reducers](#reducers)
-  - [Adding Actions](#adding-actions)
-- [Serving Workers (for offline capabilities) (continua da 390)](#serving-workers-for-offline-capabilities-continua-da-390)
+  - [Router links](#Router-links)
+  - [Navigating Programmatically](#Navigating-Programmatically)
+  - [Fetching route parameters](#Fetching-route-parameters)
+  - [Query Parameters and Fragments](#Query-Parameters-and-Fragments)
+  - [Nested Routes](#Nested-Routes)
+  - [Redirecting and Wildcard Routes](#Redirecting-and-Wildcard-Routes)
+  - [Route Guards](#Route-Guards)
+    - [Protecting Child (nested) Routes with canActivateChild](#Protecting-Child-nested-Routes-with-canActivateChild)
+    - [canDeactivate](#canDeactivate)
+  - [Passing Data to a Route](#Passing-Data-to-a-Route)
+    - [Static way](#Static-way)
+    - [Dynamic way with a Resolver Guard](#Dynamic-way-with-a-Resolver-Guard)
+- [Observables](#Observables)
+    - [Operators](#Operators)
+      - [Catching errors](#Catching-errors)
+  - [Unsubscribe](#Unsubscribe)
+  - [Subject](#Subject)
+- [Forms](#Forms)
+  - [Tempalate Driven (TD) approach](#Tempalate-Driven-TD-approach)
+    - [Validation](#Validation)
+    - [Grouping](#Grouping)
+    - [Handling radio buttons](#Handling-radio-buttons)
+    - [Setting/patching and resetting form values](#Settingpatching-and-resetting-form-values)
+  - [Reactive approach](#Reactive-approach)
+    - [Getting access to controls](#Getting-access-to-controls)
+    - [Grouping controls](#Grouping-controls)
+    - [Arrays of Form Controls](#Arrays-of-Form-Controls)
 # Angular CLI
 ```bash
 ng serve # Avvia il server locale (node, webpack ecc.)
@@ -142,6 +123,119 @@ export class ExampleClass {
 
 > NOTA<br>
 > Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile NON FARLO essendoci modi migliori forniti da Angular.
+## Gestione i18n semplice ed efficace
+Service
+```typescript
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Lang } from './translate.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class Lang { //Non è una good practice mettere i models nel file del service
+  constructor(
+    public code: string,
+    public tooltip: string,
+    public flagUrl: string) {}
+}
+
+export class TranslateService {
+  data: any = {};
+  private langs: Lang[] = [
+    { code: 'it', tooltip: 'Italiano', flagUrl: '/assets/flags/it.svg' },
+    { code: 'en', tooltip: 'English', flagUrl: '/assets/flags/en.svg' }
+  ];
+  private currentLang: string;
+  private currentLangCookieName = 'currentLang';
+
+  constructor(private http: HttpClient) { }
+
+  getLangs(): Lang[] {
+    return this.langs;
+  }
+
+  setCurrentLang(lang: string) {
+    this.currentLang = lang;
+    localStorage.setItem(this.currentLangCookieName, this.currentLang);
+  }
+
+  getCurrentLang(): string {
+    if (this.currentLang) {
+      return this.currentLang;
+    } else {
+      this.currentLang = localStorage.getItem(this.currentLangCookieName);
+      if (!this.currentLang) {
+        this.setCurrentLang('en');
+      }
+      return this.currentLang;
+    }
+  }
+
+  use(lang: string): Promise<{}> {
+    return new Promise<{}>((resolve, reject) => {
+      const langPath = `assets/i18n/${lang || 'en'}.json`;
+
+      this.http.get<{}>(langPath).subscribe(
+        (translation) => {
+          this.data = Object.assign({}, translation || {});
+          resolve(this.data);
+          this.setCurrentLang(lang);
+        },
+        (error) => {
+          this.data = {};
+          resolve(this.data);
+          throw new Error(error);
+        }
+      );
+    });
+  }
+
+  translate(key: any): any {
+    return this.data[key];
+  }
+}
+
+```
+Pipe, per utilizzare il service in modo più immediato
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+import { TranslateService } from './translate.service';
+
+@Pipe({
+  name: 'translate',
+  pure: false
+})
+export class TranslatePipe implements PipeTransform {
+
+  constructor(private translate: TranslateService) {}
+
+  transform(key: any): any {
+    return this.translate.data[key];
+  }
+}
+```
+Metodi e dichiarazioni del .module
+```typescript
+import ...
+
+export function setupTranslateFactory(
+  service: TranslateService) {
+  return () => service.use(service.getCurrentLang());
+}
+
+...
+  providers: [
+    TranslateService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: setupTranslateFactory,
+      deps: [ TranslateService ],
+      multi: true
+    }
+
+```
 ## Unit Test
 Aiutano a testare automaticamente il funzionamento e se le injection funzionano come programmato (components, services, pipes ....)
 - Guards against breaking changes
@@ -362,6 +456,25 @@ father.component.html
   (optionalAlias2)="myFancyFunc($event)"></component>
 <!--$event ha i valori emessi dal emit es. 'father, read this'->
 ```
+## @ViewChild() and @ContentChild()
+Decoratori molto importanti per poter accedere ad elementi del template, saranno visti nelle sezioni corrispondenti ai vari utilizzi.
+> NOTE PER ANGULAR 8:
+
+In Angular 8, the @ViewChild() syntax which you'll see in the next lecture needs to be changed slightly:
+
+Instead of:
+```typescript
+@ViewChild('serverContentInput') serverContentInput: ElementRef;
+```
+use
+```typescript
+@ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef;
+```
+The same change (add { static: true } as a second argument) needs to be applied to ALL usages of @ViewChild() (and also @ContentChild()) If you plan on accessing the selected element inside of ngOnInit().
+
+If you DON'T access the selected element in ngOnInit (but anywhere else in your component), set static: false instead!
+
+This is a temporary adjustment which will NOT be required anymore once Angular 9 is released!
 # Angular Directives
 Le Directives sono istruzioni nel DOM, il selector consigliato è by attribute<br>
 **I Components sono Directives**
@@ -401,6 +514,8 @@ Ripete l'elemento ciclando su un array dato (purtroppo non si può ciclare su un
 ```html
 <div *ngFor="let e of array; let i=index">InnerText</div>
 <!--La seconda parte è opzionale, e serve a sapere l'index attuale dell'array (tramite la variabile i)-->
+<div *ngFor="let e of array; let isFirst=first; let isLast=last">InnerText</div>
+<!--La seconda parte è opzionale, combinabile con altre, e serve per capire qual'è il primo/ultimo elemento-->
 ```
 ### *ngSwitch
 Visualizza il case corrispondente al value immesso
@@ -1125,7 +1240,7 @@ this.signupForm.reset(); // Resetta tutti i valori e gli stati (touched ecc.)
 ## Reactive approach
 > importare ReactiveFormsModule nel .module.ts
 ```typescript
-import ReactiveFormsModule from '@angular/forms'
+import { ReactiveFormsModule } from '@angular/forms'
 // ...
 imports: [
   // ...
@@ -1141,9 +1256,9 @@ import { FormGroup, Validators } from '@angular/forms'
 
   ngOninit() {
     this.form = new FormGroup({
-      'username': new FormControl(null, [Validators.required, Validators.email]),
-      'password': new FormControl(null, Validators.required),
-      'gender': new FormControl('male'),
+      username: new FormControl(null, [Validators.required, Validators.email]),
+      password: new FormControl(null, Validators.required),
+      gender: new FormControl('male'),
     });
   }
 }
@@ -1176,11 +1291,11 @@ Esempio di Reactive form con nested FormGroup:
 // ...
   ngOninit() {
     this.form = new FormGroup({
-      'userData': new FormGroup({
-        'username': new FormControl(null, [Validators.required, Validators.email]),
-        'password': new FormControl(null, Validators.required),
+      userData: new FormGroup({
+        username: new FormControl(null, [Validators.required, Validators.email]),
+        password: new FormControl(null, Validators.required),
       }),
-      'gender': new FormControl('male'),
+      gender: new FormControl('male'),
     });
   }
 }
@@ -1199,8 +1314,8 @@ import { FormArray, ... } from '@angular/forms'
 // ...
   ngOninit() {
     this.form = new FormGroup({
-      'name': new FormControl(null, Validators.required),
-      'hobbies': new FormArray([])
+      name: new FormControl(null, Validators.required),
+      hobbies: new FormArray([])
     });
   }
 
@@ -1210,6 +1325,12 @@ import { FormArray, ... } from '@angular/forms'
     (<FormArray>this.signupForm.get('hobbies')).push(control);
   }
 }
+```
+> Angular 8 new way for clearing all items:
+
+ ```typescript
+(<FormArray>this.recipeForm.get('ingredients')).clear();
+// Cicla automaticamente tutti i formControls/formGroup, come un loop di removeAt() per ogni elemento
 ```
 associare il ts al html
 ```html
@@ -1240,6 +1361,7 @@ associare il ts al html
   }
 ```
 #### Async custom validators
+Example 1
 ```typescript
   ngOninit() {
     this.form = new FormGroup({
@@ -1262,6 +1384,29 @@ associare il ts al html
   }
 ```
 > L'html risultante nel tempo di attesa del validator asincrono avrà la classe **.ng-pending**
+
+Example 2
+```typescript
+  asyncMailValidator(control: FormControl): Promise<any> {
+    clearTimeout(this.asyncValidatorTimeout);
+    const emailReq = new EmailRequest(control.value); // model usato con il constructor
+    return new Promise((resolve, reject) => {
+      this.asyncValidatorTimeout = setTimeout(() => {
+        this.authService.validateEmail(emailReq).subscribe((valid: boolean) => {
+          if (valid) {
+            resolve(null);
+          } else {
+            resolve({ emailNotFound: true});
+          }
+        },
+          (error: string) => {
+            console.error(error);
+            resolve({ emailNotFound: true });
+          });
+        }, 1000);
+    });
+  }
+```
 ### Reacting to Status or Value Changes
 Posso usare 2 metodi che ritonano un observable per monitorare il cambio di valore o di stato della form/del singolo campo:
 - valueChanges

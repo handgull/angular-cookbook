@@ -9,6 +9,8 @@ Table of Contents
     - [Sourcemaps](#sourcemaps)
     - [Augury](#augury)
   - [Local References (label)](#local-references-label)
+  - [Adding Environments](#adding-environments)
+  - [How to](#how-to)
   - [Unit Test](#unit-test)
     - [Isolated vs Non-Isolated Tests](#isolated-vs-non-isolated-tests)
 - [Angular Components](#angular-components)
@@ -142,6 +144,70 @@ export class ExampleClass {
 
 > NOTA<br>
 > Tramite questa reference è possibile cambiare i valori del DOM (es. cambiare il .value di un elemento html), è consigliabile NON FARLO essendoci modi migliori forniti da Angular.
+## Adding Environments
+Gestire tanti envinronment è molto utile in caso si debbano gestire molteplici pubblicazioni oppure se in fase di debug ci si appoggia a dei servizi che simulano il backend.<br>
+
+How to
+---
+1. creare un nuovo env file, ad esempio : ```src\environments\environment.test.ts```<br>
+contenuto di esempio:
+```typescript
+export const environment = {
+  production: false,
+  basePath: 'https://localhost:8080'
+};
+```
+2. Modifiche al file **angular.json**
+```typescript
+"configurations": {
+  "production": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.prod.ts"
+      }
+    ],
+    "optimization": true,
+    "outputHashing": "all",
+    "sourceMap": false,
+    "extractCss": true,
+    "namedChunks": false,
+    "aot": true,
+    "extractLicenses": true,
+    "vendorChunk": false,
+    "buildOptimizer": true
+  },
+  // CODICE AGGIUNTIVO CHE DICE DI SOSTITUIRE I FILE
+  // NOTA: questa modifica ha luogo solo con ng build --test
+  "test": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.test.ts"
+      }
+    ]
+  }
+}
+```
+> NOTA: project-name è il nome del progetto e per tanto cambia di progetto in progetto
+```typescript
+"serve": {
+  "builder": "@angular-devkit/build-angular:dev-server",
+  "options": {
+    "browserTarget": "project-name:build"
+  },
+  "configurations": {
+    "production": {
+      "browserTarget": "project-name:build:production"
+    },
+  // CODICE AGGIUNTIVO
+  // NOTA: questa modifica ha luogo in ng serve --configuration=test
+    "test": {
+      "browserTarget": "project-name:build:test"
+    }
+  }
+},
+```
 ## Unit Test
 Aiutano a testare automaticamente il funzionamento e se le injection funzionano come programmato (components, services, pipes ....)
 - Guards against breaking changes

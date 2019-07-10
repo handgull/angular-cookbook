@@ -5,11 +5,13 @@ Table of Contents
 - [Angular CLI](#Angular-CLI)
 - [PackageManager (di default npm)](#PackageManager-di-default-npm)
 - [General](#General)
+  - [What's new in Angular 8](#Whats-new-in-Angular-8)
   - [Debug tools](#Debug-tools)
     - [Sourcemaps](#Sourcemaps)
     - [Augury](#Augury)
   - [Local References (label)](#Local-References-label)
   - [Gestione i18n semplice ed efficace](#Gestione-i18n-semplice-ed-efficace)
+  - [Adding Environments](#Adding-Environments)
   - [Unit Test](#Unit-Test)
     - [Isolated vs Non-Isolated Tests](#Isolated-vs-Non-Isolated-Tests)
 - [Angular Components](#Angular-Components)
@@ -76,6 +78,8 @@ ng g d optionalPath/newDirective # Genera directive
 ng g s optionalPath/newService # Genera directive
 ng g g optionalPath/newService # Genera guard
 ng g p optionalPath/newPipe # Genera pipe
+ng build --prod --base-href . # Genera i file compilati nella cartella dist, dando un base path
+# NOTA: con Angular 8 ng build di default usa AOT(ahead-of-time)
 ```
 # PackageManager (di default npm)
 ```bash
@@ -84,6 +88,50 @@ npm install --save package # Installa il package E LO SALVA in package.json (i f
 npm install # Installa tutti i package elencati in package.json
 ```
 # General
+## What's new in Angular 8
+- Typescript 3.4
+- Ivy
+  Il nuovo compilatore / runtime di Angular. In futuro vi saranno moltoi cambiamenti, per ora cerca di essere il più retrocompatibile possibile
+- Bazel support
+- Forms
+  Aggiunti alcuni metodi, visti nel capitolo corrispondente
+- Lazy-loading with import() syntax
+  sono ancora accettate le vecchie sintassi ma se si usa Ivy va usata per forza la nuova:<br>
+  So you can change your loadChildren declarations from:
+  ```typescript
+  loadChildren: './admin/admin.module#AdminModule'
+  ```
+  to:
+  ```typescript
+  loadChildren: () => import('./races/races.module').then(m => m.RacesModule)
+  ```
+  > A schematic offered by the CLI will automatically migrate your declarations for you, so this should be painless if you run ng update @angular/cli & ng update @angular/core.
+- Service Worker
+  - Nuova strategia che permette di specificare quando la registration dovrebbe avere luogo
+  - Multiple apps on sub-domains
+- Queries timing
+  I decorator ViewChild e ContentChild hanno una nuova opzione, chiamata static.
+  Se static è a true l'element è disponibile anche nell'ngOnInit (se non si usa Ivy è sempre static).
+  > Note that if you add static: true on a dynamic element (wrapped in a condition or a loop), then it will not be accessible in ngOnInit nor in ngAfterViewInit!
+- Template variable reassignment<br>
+  Currently with View Engine, doing something like:
+  ```html
+  <button
+    *ngFor="let option of options"
+    (click)="option = 'newButtonText'">{{ option }}</button>
+  works.
+  ```
+  In Ivy, that won’t be the case anymore: it will not be possible to reassign a value to a template variable (here option). To prepare the switch to Ivy, a schematic analyzes your templates when you upgrade to Angular 8.0 and warns you if that’s the case.
+
+  You then have to manually fix it:
+  ```html
+  <button
+    *ngFor="let option of options; index as index"
+    (click)="options[index] = 'newButtonText'">{{ option }}</button>
+  ```
+- DOCUMENT token spostato da @angular/platform-browser ad @angular/common
+- Deprecato il package per il webworker
+- Rimosso il package HTTP deprecato (versione vecchia di HttpClient)
 ## Debug tools
 ### Sourcemaps
 Grazie alla compatibilità con sourcemaps, usando la console: **F12 > source** potremo vedere il codice, che verrà ritradotto in typescript e da lì sarà possibile aggiungere dei breakpoint **DIRETTAMENTE** da browser.
@@ -101,7 +149,8 @@ Augury è un estensione chrome che permette di analizzare app angular.<br>
 ## Local References (label)
 Tramite queste label posso riferirmi ad un elemento html e passarlo come argomento<br>
 > SOLO nel html le posso usare, non nel typescript a meno che non si usi **@ViewChild** o **@ContentChild**<br>
-> @ViewChild se è nella vista, @ContentChild se è nel content (ng-content)
+> @ViewChild se è nella vista, @ContentChild se è nel content (ng-content)<br>
+> NOTA: **@ViewChild** / **@ContentChild** in Angular 8 hanno lievi modifiche
 ```html
 <div #LocalReference>Hello World</div>
 <button (click)="myFunc(LocalReference)">Click me!</button>
@@ -109,6 +158,8 @@ Tramite queste label posso riferirmi ad un elemento html e passarlo come argomen
   <div #LocalContentReference>Hello World</div>
 </ng-content>
 ```
+> Caso interessante in cui io ho una label passata come parametro ad una funzione, in questo modo ho una comunicazione con il .ts senza dover usare i decorator sopra citati
+
 .ts corrispondente all'html
 ```typescript
 import { ViewChild, ContentChild, ElementRef } from '@angular/core';
@@ -299,6 +350,69 @@ export function setupTranslateFactory(
       multi: true
     }
 
+```
+## Adding Environments
+Gestire tanti envinronment è molto utile in caso si debbano gestire molteplici pubblicazioni oppure se in fase di debug ci si appoggia a dei servizi che simulano il backend.<br>
+
+**How to**
+1. creare un nuovo env file, ad esempio : ```src\environments\environment.test.ts```<br>
+contenuto di esempio:
+```typescript
+export const environment = {
+  production: false,
+  basePath: 'https://localhost:8080'
+};
+```
+2. Modifiche al file **angular.json**
+```typescript
+"configurations": {
+  "production": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.prod.ts"
+      }
+    ],
+    "optimization": true,
+    "outputHashing": "all",
+    "sourceMap": false,
+    "extractCss": true,
+    "namedChunks": false,
+    "aot": true,
+    "extractLicenses": true,
+    "vendorChunk": false,
+    "buildOptimizer": true
+  },
+  // CODICE AGGIUNTIVO CHE DICE DI SOSTITUIRE I FILE
+  // NOTA: questa modifica ha luogo solo con ng build --test
+  "test": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.test.ts"
+      }
+    ]
+  }
+}
+```
+> NOTA: project-name è il nome del progetto e per tanto cambia di progetto in progetto
+```typescript
+"serve": {
+  "builder": "@angular-devkit/build-angular:dev-server",
+  "options": {
+    "browserTarget": "project-name:build"
+  },
+  "configurations": {
+    "production": {
+      "browserTarget": "project-name:build:production"
+    },
+  // CODICE AGGIUNTIVO
+  // NOTA: questa modifica ha luogo in ng serve --configuration=test
+    "test": {
+      "browserTarget": "project-name:build:test"
+    }
+  }
+},
 ```
 ## Unit Test
 Aiutano a testare automaticamente il funzionamento e se le injection funzionano come programmato (components, services, pipes ....)
@@ -1390,11 +1504,13 @@ import { FormArray, ... } from '@angular/forms'
   }
 }
 ```
-> Angular 8 new way for clearing all items:
+> Angular 8 new way for clearing / touch all items:
 
  ```typescript
 (<FormArray>this.recipeForm.get('ingredients')).clear();
 // Cicla automaticamente tutti i formControls/formGroup, come un loop di removeAt() per ogni elemento
+form.markAllAsTouched();
+// Segna ogni elemento come touched, utile per far uscire i messaggi di errore
 ```
 associare il ts al html
 ```html
